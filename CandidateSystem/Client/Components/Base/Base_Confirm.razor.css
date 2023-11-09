@@ -1,0 +1,47 @@
+﻿.notify-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,.1);
+}
+
+.notify-wrapper {
+    width: fit-content;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    background-color: white;
+    border: 1px solid #c1c1c1f7;
+    padding: 56px 40px 12px 40px;
+    border-radius: 8px;
+}
+
+.notify-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notify-icon {
+    font-size: 24px;
+    color: red;
+}
+
+.notify-text {
+    white-space: nowrap;
+    padding-left: 12px;
+    font-size: 16px;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.btn-custom{
+    margin:8px;
+}

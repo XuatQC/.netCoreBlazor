@@ -1,0 +1,15 @@
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\bin\Debug\net6.0\CandidateSystem.DataLayer.deps.json
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\bin\Debug\net6.0\CandidateSystem.DataLayer.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\bin\Debug\net6.0\CandidateSystem.DataLayer.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\bin\Debug\net6.0\CandidateSystem.Shared.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\bin\Debug\net6.0\CandidateSystem.Shared.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.csproj.AssemblyReference.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.AssemblyInfoInputs.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.AssemblyInfo.cs
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.csproj.CoreCompileInputs.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.csproj.CopyComplete
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\refint\CandidateSystem.DataLayer.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\CandidateSystem.DataLayer.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.DataLayer\obj\Debug\net6.0\ref\CandidateSystem.DataLayer.dll

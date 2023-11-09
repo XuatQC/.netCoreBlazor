@@ -1,0 +1,56 @@
+﻿<div class="notify-container">
+    <div class="notify-wrapper">
+        <div class="notify-info">
+            <div class="notify-icon" style="color:@colorIcon">
+                <span class="oi @NotifyIcon" aria-hidden="true"></span>
+            </div>
+            <div class="notify-text">
+                @notifyMessage
+            </div>
+        </div>
+        <div class="button-wrapper">
+            <button class="btn btn-success" @onclick="ClickHandler">
+                Close
+             </button>
+        </div>
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public string notifyMessage{ get; set; }
+
+    [Parameter] 
+    public bool isSuccess{get;set;}
+
+    [Parameter]
+    public EventCallback callBackFunc { get; set; }
+
+    public string colorIcon;
+
+    private string NotifyIcon;
+
+    protected override void OnInitialized()
+    {
+        if (isSuccess)
+        {
+            NotifyIcon = "oi-circle-check";
+            colorIcon = "green";
+        }
+        else
+        {
+            NotifyIcon = "oi-circle-x";
+            colorIcon = "red";
+        }
+    }
+
+    /// <summary>
+    /// click Handler
+    /// </summary>
+    public void ClickHandler()
+    {
+        callBackFunc.InvokeAsync();
+    }
+
+
+}

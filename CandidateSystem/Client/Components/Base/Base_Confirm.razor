@@ -1,0 +1,69 @@
+﻿<div class="notify-container">
+    <div class="notify-wrapper">
+        <div class="notify-info">
+            <div class="notify-icon" style="color:@colorIcon">
+                <span class="oi oi-info" aria-hidden="true"></span>
+            </div>
+            <div class="notify-text">
+                @ConfirmMessage
+            </div>
+        </div>
+        <div class="button-wrapper">
+             <button class="btn btn-custom btn-success"   @onclick="ConfirmHandler">
+                Yes
+            </button>
+            <button class="btn btn-custom btn-danger" @onclick="CloseHandler">
+                No
+            </button>
+        </div>
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public string ConfirmMessage { get; set; }
+
+    [Parameter]
+    public bool isSuccess { get; set; }
+
+    [Parameter]
+    public EventCallback callBackConfirmFunc { get; set; }
+
+    [Parameter]
+    public EventCallback callBackCloseFunc { get; set; }
+
+    public string colorIcon;
+
+    private string NotifyIcon;
+
+    protected override void OnInitialized()
+    {
+        if (isSuccess)
+        {
+            NotifyIcon = "oi-circle-check";
+            colorIcon = "green";
+        }
+        else
+        {
+            NotifyIcon = "oi-circle-x";
+            colorIcon = "red";
+        }
+    }
+
+    /// <summary>
+    /// click Handler
+    /// </summary>
+    public void CloseHandler()
+    {
+        callBackCloseFunc.InvokeAsync();
+    }
+    /// <summary>
+    /// click Handler
+    /// </summary>
+    public void ConfirmHandler()
+    {
+        callBackConfirmFunc.InvokeAsync();
+    }
+
+
+}

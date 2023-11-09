@@ -1,0 +1,373 @@
+﻿@page "/filter-candidate"
+@inject HttpClient Http
+@using CandidateSystem.Client.Components.Base
+@using Newtonsoft
+@inject IJSRuntime JS
+<div class="page-container">
+    <h3>Filter Candidate</h3>
+    <div class="function-bar">
+    @if(isShowMassActionButton){
+        <div class="action-container">
+                <button class="btn btn-primary" @onclick="MassActionAccept">Accept</button>
+                <button class="btn btn-danger" @onclick="MassActionDeny">Deny</button>
+        </div>
+    }
+    <div class="search-container">
+        <input class="search-input-text" value="@searchKeyword" 
+               placeholder="search by name" @oninput="(e)=> FindByNameHandler(e)"></input>
+    </div>
+    </div>
+    <div class="table-custom"> 
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col" class="d-flex-center">
+                    <input type="checkbox" class="form-check-input"
+                           @onchange="(e)=> CheckAllBox(e.Value.ToString())" />
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateID")'>
+                        ID
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobPosition")'>
+                        Position
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobTitle")'>
+                        Job Title
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateName")'>
+                        Full Name
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateDateOfBirth")'>
+                        Date of Birth
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateNumber")'>
+                        Phone Number
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("Resource")'>
+                        Resource
+                    </button>
+                    </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("HasApplyBefore")'>
+                        Apply Before
+                    </button>
+                    </th>
+                <th scope="col">
+                    Action
+                    </th>
+            </tr>
+        </thead>
+                <tbody>
+            @if (listOfObject.Count != 0)
+            {
+                @foreach (Candidate iter in listOfObjectBySearch)
+                { 
+                    <tr class="table-row">
+                        <th scope="col" class="d-flex-center">
+                        <input type="checkbox" class="form-check-input"  id="@iter.CandidateID" @onchange="(e)=> CheckboxHandler(e,iter.CandidateID)"/>
+                    </th>
+                    <td>
+                        <button class="normally-button" @onclick="()=>ShowCVUp(iter.CandidateCV)">@iter.CandidateID</button>
+                        </td>
+                    <td>@iter.JobPosition</td>
+                    <td>@iter.JobTitle</td>
+                    <td>@iter.CandidateName</td>
+                    <td>@Util.DatetimeFormatter(iter.CandidateDateOfBirth)</td>
+                    <td>@iter.CandidateNumber.PhoneNumberFormatter()</td>
+                    <td>@iter.Resource</td>
+                    <td>
+                        <button class="normally-button" @onclick="()=>ShowDenyReason(iter.CandidateEmail,iter.CandidateNumber)">
+                            @Util.BitIntToBooleanString(iter.HasApplyBefore)
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="()=>ActionAccept(iter.CandidateID)">Accept</button>
+                        <button class="btn btn-danger" @onclick="()=>AtionDeny(iter.CandidateID)">Deny</button>
+                    </td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+        @if (listOfObject == null && isCompletelyLoad || listOfObject.Count == 0 && isCompletelyLoad)
+        {
+            <div class="table-notify">There is no Candidate</div> 
+        }
+    </div>
+    @if (listOfObject.Count == 0 && !isCompletelyLoad)
+    {
+        <div class="load-proceeding-circle">
+            <div class="spinner-border text-secondary" role="status">
+            </div>
+        </div>
+    }
+    @if(isShowCV){
+        <div class="cv-container">
+            <div class="cv-wrapper">
+                <div class="cv-info">
+                    <button class="btn cv-close btn-danger" @onclick='()=>ShowCVUp("")'>X</button>
+                        <embed src=@cvPath class="cv-embed" />
+                </div>
+                </div> 
+        </div>
+    }
+    @if(isShowDenyReason){
+        <div class="deny-reason-pop-up">
+            <div class="deny-reason-container">
+                <div class="deny-reason-content">
+                    @currentDenyReason
+                </div> 
+                <div class="deny-reason-button">
+                    <button class="btn btn-light" @onclick="@CloseDenyReason">Close</button>
+                </div>
+            </div>
+         </div>  
+    }
+    @if(isShowConfirmBox){
+        <Base_Confirm ConfirmMessage="Do you want to make the changes?" 
+        callBackCloseFunc="CloseConfirmBox" callBackConfirmFunc="AcceptConfirmBox"
+        ></Base_Confirm>
+    }
+
+
+</div>
+@code {
+    #region Properties
+    private string cvPath = "";
+    private string sortBy = "";
+    public bool isShowCV;
+    public bool isShowConfirmBox = false;
+    public bool isAccept = false;
+    private string searchKeyword = "";
+    private bool isShowMassActionButton = false;
+    private List<int> listOfIdGoingToDoAction = new List<int>();
+    public List<Candidate>? listOfObject = new List<Candidate>();
+    public List<Candidate>? listOfObjectBySearch = null;
+    public bool isCompletelyLoad = false;
+    public bool isShowDenyReason = false;
+    private string currentDenyReason = "";
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// on init
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        LoadData();
+    }
+
+    /// <summary>
+    ///  Event click Checkbox 
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="id"></param>
+    public void CheckboxHandler(ChangeEventArgs e,int id)
+    {
+        if(e.Value.ToString() == "True")
+        {
+            listOfIdGoingToDoAction.Add(id);
+        }
+        else if(e.Value.ToString() == "False")
+        {
+            listOfIdGoingToDoAction.Remove(id);
+        }
+        ToggleDisplayMassAction();
+    }
+
+    /// <summary>
+    /// ToggleDisplayMassAction
+    /// </summary>
+    public async void ToggleDisplayMassAction()
+    {
+        if (listOfIdGoingToDoAction.Count > 0)
+        {
+            isShowMassActionButton = true;
+        } 
+        else if(listOfIdGoingToDoAction.Count == 0){
+            isShowMassActionButton = false;
+            await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        }
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// input checkbox check all box event handler
+    /// </summary>
+    /// <param name="e"></param>
+    public async void CheckAllBox(string e){
+        bool isTrue = false;
+        if(e == "True"){
+            isTrue = true;
+        }
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", isTrue);
+        if (isTrue)
+        {
+            foreach(var i in listOfObjectBySearch)
+            {
+                if(!listOfIdGoingToDoAction.Any(x => x == i.CandidateID))
+                {
+                    listOfIdGoingToDoAction.Add(i.CandidateID);
+                }
+            }
+        }
+        else
+        {
+            foreach (var i in listOfObjectBySearch)
+            {
+                if (listOfIdGoingToDoAction.Any(x => x == i.CandidateID))
+                {
+                    listOfIdGoingToDoAction.Remove(i.CandidateID);
+                }
+            }
+        }
+        Console.WriteLine(listOfIdGoingToDoAction.Count);
+        ToggleDisplayMassAction();   
+    }
+
+    /// <summary>
+    /// Close confirm box
+    /// </summary>
+    public async void MassActionDeny(){
+        isShowConfirmBox = true;
+        isAccept = false;
+    }
+
+    /// <summary>
+    /// Close confirm box with implementing the Task
+    /// </summary>
+    public async void MassActionAccept()
+    {
+        isShowConfirmBox = true;
+        isAccept = true;
+    }
+
+    /// <summary>
+    /// Call API get by delFlag(1)
+    /// </summary>
+    /// <returns></returns>
+    public async void LoadData(){
+        isCompletelyLoad = false;
+        listOfObject = await Http.GetFromJsonAsync<List<Candidate>>($"api/candidate/store/{(int)CandidateStatusCode.ReceiveCV}/1");
+        listOfObjectBySearch = listOfObject;
+        isCompletelyLoad = true;
+        StateHasChanged();
+
+    }
+
+    /// <summary>
+    /// change statusValue of candidate to accept 
+    /// </summary>
+    /// <param name="id"></param>
+    public async void ActionAccept(int id)
+    {
+        Console.WriteLine(id);
+        await Http.DeleteAsync($"api/candidate/status/{id}/{(int)CandidateStatusCode.AcceptCV}");
+        LoadData();
+    }
+
+    /// <summary>
+    /// delete logic a candidate
+    /// </summary>
+    /// <param name="id"></param>
+    public async void AtionDeny(int id)
+    {
+        await Http.DeleteAsync($"api/candidate/changedelflag/{id}/0");
+        LoadData();
+    }
+
+    /// <summary>
+    /// load and show cv up by pressing button
+    /// </summary>
+    /// <param name="id"></param>
+    public void ShowCVUp(string cvfileName){
+        cvPath = "CV/" + cvfileName + ".pdf";
+        isShowCV = !isShowCV;
+    }
+
+    /// <summary>
+    /// sort button click event handler : sort listofObject by its propeties
+    /// </summary>
+    /// <param name="sortByWhat"></param>
+    public void SortBy(string sortByWhat)
+    {
+        if (sortByWhat == sortBy){
+            listOfObjectBySearch.Sort((p1, p2) => p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString().CompareTo(
+            p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString()));
+            sortBy = "";
+        }
+        else{
+            listOfObjectBySearch.Sort((p1, p2) => p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString().CompareTo(
+            p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString()));
+            sortBy = sortByWhat;
+        }
+    }
+    //// <summary>
+    /// find candidates by its name on input
+    /// </summary>
+    public void FindByNameHandler(ChangeEventArgs e){
+        string searchKeyword = e.Value.ToString().ToLower().Trim().Replace(" ","");
+        listOfObjectBySearch = listOfObject;
+        if(searchKeyword != ""){
+            listOfObjectBySearch = listOfObjectBySearch.FindAll(x => x.CandidateName.ToLower().Trim().Replace(" ", "").Contains(searchKeyword));
+        }
+    }
+
+    /// <summary>
+    /// close confirm box
+    /// </summary>
+    public void CloseConfirmBox()
+    {
+        isShowConfirmBox = false;
+    }
+
+    /// <summary>
+    /// Confirm confirm box event handler
+    /// </summary>
+    public async void AcceptConfirmBox()
+    {
+        isShowConfirmBox = false;
+
+        if(isAccept){
+            await Http.PostAsJsonAsync<List<int>>($"api/candidate/masschangestatus/{(int)CandidateStatusCode.AcceptCV}", listOfIdGoingToDoAction);
+        }
+        else{
+            await Http.PostAsJsonAsync<List<int>>("api/candidate/masschangeflag/0", listOfIdGoingToDoAction);
+
+        }
+        listOfIdGoingToDoAction.Clear();
+        ToggleDisplayMassAction();
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        LoadData();
+    }
+
+    public async void ShowDenyReason(string email,string phone){
+        //currentDenyReason = listOfObject.Find(x => x.CandidateID == candidateID).DenyReason.ToString();
+        //deny-reason/{email}/{phone}
+        var response = await Http.PostAsJsonAsync<string>($"api/candidate/deny-reason/{email}", phone);
+        currentDenyReason = await response.Content.ReadAsStringAsync();
+        isShowDenyReason = true;
+        StateHasChanged();
+    }
+
+    public void CloseDenyReason(){
+        isShowDenyReason = false;
+    }
+    #endregion
+
+}

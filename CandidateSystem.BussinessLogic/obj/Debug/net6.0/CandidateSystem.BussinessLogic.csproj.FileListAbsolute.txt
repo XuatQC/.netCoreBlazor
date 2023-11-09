@@ -1,0 +1,17 @@
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.BussinessLogic.deps.json
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.BussinessLogic.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.BussinessLogic.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.DataLayer.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.Shared.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.DataLayer.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\bin\Debug\net6.0\CandidateSystem.Shared.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.csproj.AssemblyReference.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.AssemblyInfoInputs.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.AssemblyInfo.cs
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.csproj.CopyComplete
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\refint\CandidateSystem.BussinessLogic.dll
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\CandidateSystem.BussinessLogic.pdb
+C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem.BussinessLogic\obj\Debug\net6.0\ref\CandidateSystem.BussinessLogic.dll

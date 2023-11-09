@@ -1,0 +1,121 @@
+.normally-button[b-27ryjnt0tb] {
+    display: inline;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+.input-container[b-27ryjnt0tb] {
+    min-height: 84px;
+    min-width: 442px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+
+.input-label[b-27ryjnt0tb] {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.validate-message[b-27ryjnt0tb] {
+    padding-left: 4px;
+    font-size: 14px;
+}
+.add-assess-form[b-27ryjnt0tb] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: #b5b4b45c;
+}
+.assess-form-container[b-27ryjnt0tb] {
+    width: 500px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: white;
+    border-radius: 8px;
+}
+.assess-form-wrapper[b-27ryjnt0tb]{
+    padding:24px;
+}
+.assess-header[b-27ryjnt0tb] {
+    font-size:26px;
+    padding: 12px 0 12px 0;
+}
+.button-wrapper[b-27ryjnt0tb] {
+    padding-top: 14px;
+}
+.input-radio-items[b-27ryjnt0tb] {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+.input-radio-wrapper[b-27ryjnt0tb] {
+    padding: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+.input-radio-class[b-27ryjnt0tb]{
+
+}
+.input-radio-label[b-27ryjnt0tb]{
+    padding-left:8px;
+}
+.button-actions-container[b-27ryjnt0tb] {
+    padding: 4px 0 8px 0;
+    height: 48px;
+}
+
+.mail-container[b-27ryjnt0tb] {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #5a5a5a33;
+}
+
+.mail-wrapper[b-27ryjnt0tb] {
+    width: 600px;
+    background-color: white;
+    padding: 26px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.mail-body[b-27ryjnt0tb] {
+}
+
+.mail-form-header[b-27ryjnt0tb] {
+}
+
+.input-container[b-27ryjnt0tb] {
+    min-height: 84px;
+    min-width: 208px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+
+.input-label[b-27ryjnt0tb] {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.validate-message[b-27ryjnt0tb] {
+    padding-left: 4px;
+    font-size: 14px;
+}
+
+.button-container[b-27ryjnt0tb] {
+    padding-top: 12px;
+}
+.table-notify[b-27ryjnt0tb] {
+    text-align: center;
+    font-style: italic;
+    color: #c5c0c0;
+}

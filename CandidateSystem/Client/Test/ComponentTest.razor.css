@@ -1,0 +1,42 @@
+.mail-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #5a5a5a33;
+}
+.mail-wrapper {
+    width: 600px ;
+    background-color: white;
+    padding: 26px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+}
+.mail-body{
+
+}
+.mail-form-header{
+
+}
+.input-container {
+    min-height: 84px;
+    min-width: 208px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+.input-label {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.validate-message {
+    padding-left: 4px;
+    font-size: 14px;
+}
+.button-container{
+    padding-top:12px;
+}

@@ -1,0 +1,105 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\blazor.webassembly.js",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\obj\\Debug\\net6.0\\build-gz\\P4+P+ZGg.gz",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js.gz"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\obj\\Debug\\net6.0\\scopedcss\\bundle\\CandidateSystem.Client.styles.css",
+      "PackagePath": "staticwebassets\\CandidateSystem.Client.styles.css"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\CV\\05_17_2023_C.pdf",
+      "PackagePath": "staticwebassets\\CV\\05_17_2023_C.pdf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\CV\\05_17_2023_Python_Intern_Toan Khanh Le_123123123.pdf",
+      "PackagePath": "staticwebassets\\CV\\05_17_2023_Python_Intern_Toan Khanh Le_123123123.pdf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\CV\\05_17_2023_Python_Staff_Toan Khanh Le_123123123.pdf",
+      "PackagePath": "staticwebassets\\CV\\05_17_2023_Python_Staff_Toan Khanh Le_123123123.pdf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\CV\\05_18_2023_Python_Intern_Toan Khanh Le_123123123.pdf",
+      "PackagePath": "staticwebassets\\CV\\05_18_2023_Python_Intern_Toan Khanh Le_123123123.pdf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\app.css",
+      "PackagePath": "staticwebassets\\css\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.eot"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.otf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.svg"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.ttf"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\icon-192.png",
+      "PackagePath": "staticwebassets\\icon-192.png"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\main.js",
+      "PackagePath": "staticwebassets\\main.js"
+    },
+    {
+      "Id": "C:\\Users\\ToanLK\\source\\repos\\CandidateSystem\\CandidateSystem\\Client\\wwwroot\\test.png",
+      "PackagePath": "staticwebassets\\test.png"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.CandidateSystem.Client.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.build.CandidateSystem.Client.props",
+      "PackagePath": "build\\CandidateSystem.Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.CandidateSystem.Client.props",
+      "PackagePath": "buildMultiTargeting\\CandidateSystem.Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildTransitive.CandidateSystem.Client.props",
+      "PackagePath": "buildTransitive\\CandidateSystem.Client.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

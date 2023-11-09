@@ -1,0 +1,89 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = CandidateSystem.Client
+build_property.RootNamespace = CandidateSystem.Client
+build_property.ProjectDir = C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem\Client\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\ToanLK\source\repos\CandidateSystem\CandidateSystem\Client
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/Base_Confirm.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXEJhc2VfQ29uZmlybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-drmok0bord
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/Base_InputDate.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXEJhc2VfSW5wdXREYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-4z21xyl6ed
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/Base_InputSelect.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXEJhc2VfSW5wdXRTZWxlY3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-casbdbigha
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/Base_InputText.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXEJhc2VfSW5wdXRUZXh0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-zidpp795uy
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/Base_Notify.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXEJhc2VfTm90aWZ5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-2dmiiojcap
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Components/Base/LoadingComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xCYXNlXExvYWRpbmdDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-le1tcfq3zv
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/AssessCandidate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXNzZXNzQ2FuZGlkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-27ryjnt0tb
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/FilterCandidate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmlsdGVyQ2FuZGlkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-lhquhqokjw
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/InsertInformation.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5zZXJ0SW5mb3JtYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-mdz9t7h6ru
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/InterviewCalendar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW50ZXJ2aWV3Q2FsZW5kYXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-v5yevblgf9
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/InterviewManagerment.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW50ZXJ2aWV3TWFuYWdlcm1lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-bodcfgougt
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Pages/InviteCandidate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52aXRlQ2FuZGlkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-erd4jgcttd
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-0734svodh6
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-gdena6hl6h
+
+[C:/Users/ToanLK/source/repos/CandidateSystem/CandidateSystem/Client/Test/ComponentTest.razor]
+build_metadata.AdditionalFiles.TargetPath = VGVzdFxDb21wb25lbnRUZXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-i0byzhdo7p

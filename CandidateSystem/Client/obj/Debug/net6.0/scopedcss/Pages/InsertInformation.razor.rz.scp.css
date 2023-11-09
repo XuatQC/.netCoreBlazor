@@ -1,0 +1,25 @@
+.page-container[b-mdz9t7h6ru]{
+
+}
+.input-container[b-mdz9t7h6ru] {
+    min-height: 84px;
+    min-width: 208px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+.input-label[b-mdz9t7h6ru] {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.validate-message[b-mdz9t7h6ru]{
+    padding-left:4px;
+    font-size:14px;
+}
+.button-container[b-mdz9t7h6ru] {
+    display: flex;
+    justify-content: flex-end;
+}
+.first-button[b-mdz9t7h6ru] {
+    margin-right: 12px;
+}

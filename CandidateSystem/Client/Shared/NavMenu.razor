@@ -1,0 +1,60 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Candidate System</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="insert-information">
+                <span class="oi oi-task" aria-hidden="true"></span> Insert
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="filter-candidate">
+                <span class="oi oi-sort-ascending" aria-hidden="true"></span> Filter CV
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="invite-candidate">
+                <span class="oi oi-envelope-open" aria-hidden="true"></span> Send Mail
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="interview-managerment">
+                <span class="oi oi-people" aria-hidden="true"></span> Interview
+            </NavLink>
+        </div>  
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="interview-canlendar">
+                <span class="oi oi-comment-square" aria-hidden="true"></span> Show Interview
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="assess-candidate">
+                <span class="oi oi-signpost" aria-hidden="true"></span> Assess Candidate
+            </NavLink>
+        </div>
+        
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

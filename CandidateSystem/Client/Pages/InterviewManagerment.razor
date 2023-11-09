@@ -1,0 +1,522 @@
+﻿@page "/interview-managerment"
+@inject HttpClient Http
+@using CandidateSystem.Client.Components.Base
+@using CandidateSystem.Shared;
+@using Newtonsoft
+@inject IJSRuntime JS
+<div class="page-container">
+    <h3>Interviews</h3>
+    <div class="table-custom">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateID")'>
+                            ID
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobPosition")'>
+                            Position
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobTitle")'>
+                            Job Title
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateName")'>
+                            Full Name
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateDateOfBirth")'>
+                            Date of Birth
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateNumber")'>
+                            Phone Number
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("Resource")'>
+                            Resource
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("HasApplyBefore")'>
+                            Apply Before
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateStatusID")'>
+                            Status
+                        </button>
+                    </th>
+                    <th scope="col">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listOfObject != null)
+                {
+                    @foreach (Candidate iter in listOfObjectBySearch)
+                    {
+                        <tr class="table-row">
+                            <td>
+                                <button class="normally-button" @onclick="()=>ShowCVUp(iter.CandidateCV)">@iter.CandidateID</button>
+                            </td>
+                            <td>@iter.JobPosition</td>
+                            <td>@iter.JobTitle</td>
+                            <td>@iter.CandidateName</td>
+                            <td>@Util.DatetimeFormatter(iter.CandidateDateOfBirth)</td>
+                            <td>@iter.CandidateNumber.PhoneNumberFormatter()</td>
+                            <td>@iter.Resource</td>
+                            <td>@Util.BitIntToBooleanString(iter.HasApplyBefore)</td>
+                            <td>@iter.CandidateStatus</td
+                            <td>
+                                <button class="btn btn-primary" @onclick="()=>AddInterview(iter.CandidateID)">Add Interview</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        @if (listOfObject == null && isCompletelyLoad ||  listOfObject != null && listOfObject.Count == 0 && isCompletelyLoad)
+        {
+            <div class="table-notify">There is no Candidate</div> 
+        }
+    </div>
+    @if (listOfObject == null)
+    {
+        <div class="load-proceeding-circle">
+            <div class="spinner-border text-secondary" role="status">
+            </div>
+        </div>
+    }
+    @if (isShowCV)
+    {
+        <div class="cv-container">
+            <div class="cv-wrapper">
+                <div class="cv-info">
+                    <button class="btn cv-close btn-danger" @onclick='()=>ShowCVUp("")'>X</button>
+                    <embed src=@cvPath class="cv-embed" />
+                </div>
+            </div>
+        </div>
+    }
+    @if (isShowConfirmBox)
+    {
+        <Base_Confirm ConfirmMessage="Do you want to make the changes?" callBackCloseFunc="CloseConfirmBox" callBackConfirmFunc="AcceptConfirmBox"></Base_Confirm>
+    }
+    @if(isShowAddInterview){
+             <div class="update-container">
+                <div class="update-wrapper">
+                    <div class="preview-main-container">
+                    <h1>Interview Information</h1>
+                        <EditForm Model="@Interview" OnValidSubmit="@SaveInterview">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <div class="d-flex">
+                                <div class="input-container">
+                                    <div class="input-label">Header</div>
+                                    <InputText @bind-Value="Interview.InterviewMeetingHeader"  class="form-control"></InputText>
+                                    <div class="validate-message">
+                                        <ValidationMessage For="@(() => Interview.InterviewMeetingHeader)"></ValidationMessage>
+                                    </div>
+                                </div>
+                            </div>  
+                             <div class="d-flex">
+                                <div class="input-container">
+                                    <div class="input-label">Date</div>
+                                    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Interview.InterviewMeetingDate"  class="form-control"></InputDate>
+                                    <div class="validate-message">
+                                        <ValidationMessage For="@(() => Interview.InterviewMeetingDate)"></ValidationMessage>
+                                    </div>
+                                </div>
+                                <div class="input-container">
+                                    <div class="input-label">Room</div>
+                                    <InputSelect @bind-Value="Interview.InterviewMeetingRoomID"  class="form-control">
+                                        @foreach(InterviewProperty i in allRoom)
+                                        {
+                                            <option value="@i.PropertyID">@i.PropertyName</option>
+                                        }
+                                    </InputSelect>
+                                    <div class="validate-message">
+                                        <ValidationMessage For="@(() => Interview.InterviewMeetingRoomID)"></ValidationMessage>
+                                    </div>
+                                </div>
+                            </div> 
+                             <div class="d-flex">
+                                <div class="input-container">
+                                    <div class="input-label">Interviewer</div>
+                                    <div class="multy-select-container">
+                                        <div class="input-dropdown-container">
+                                        <input type="text" @bind-value="selectedInterviewerAsString" class="form-control" disabled /> 
+                                        <button class="button-dropdown-container" @onclick="ShowDropDownList" type="button">
+                                            <span class="oi oi-caret-bottom" aria-hidden="true"></span>
+                                        </button>
+                                        </div>
+                                            <div hidden="@(!isShowDropDownlist)" class="dropdown-list-container">
+                                              @foreach(var i in allInterview){
+                                                <div class="option-dropdown">
+                                                    <input id="@i.InterviewerID" type="checkbox" class="form-check-input" @onchange="args=>OnChangeInterview(i,args)">
+                                                    <label for="@i.InterviewerID" class="label-checkbox-container">@i.InterviewerName</label> 
+                                                </div>      
+                                              }
+                                            </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="d-flex">
+                                <div class="input-container">
+                                    <div class="input-label">Location</div>
+                                    <InputText @bind-Value="Interview.InterviewMeetingPlace"  class="form-control"></InputText>
+                                    <div class="validate-message">
+                                        <ValidationMessage For="@(() => Interview.InterviewMeetingPlace)"></ValidationMessage>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="button-container">
+                                <input type="submit" value="Save" class="btn btn-primary first-button" />
+                                <input type="button" value="Close" @onclick="CloseAddInterview" class="btn btn-light first-button" />
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+     @if (isShowBaseNotify)
+     {
+        <Base_Notify callBackFunc="CloseNotify" notifyMessage="@notifyMessage" isSuccess="@isSuccess"></Base_Notify>
+     }
+    @if (isShowProcessCircle)
+    {
+        <LoadingComponent ></LoadingComponent>
+    }
+@code {
+    #region Properties
+    private string cvPath = "";
+    private string sortBy = "";
+    public bool isShowCV;
+    public bool isShowConfirmBox = false;
+    public bool isAccept = false;
+    private string searchKeyword = "";
+    private bool isShowMassActionButton = false;
+    private bool isShowAddInterview = false;
+    private List<int> listOfIdGoingToDoAction = new List<int>();
+    public List<Candidate>? listOfObject = null;
+    public List<Candidate>? listOfObjectBySearch = null;
+    public bool isShowDropDownlist = false;
+    public InterviewMeeting Interview = new InterviewMeeting();
+    public List<Interviewer> allInterview = null;
+    public string selectedInterviewerAsString = "";
+    public List<InterviewProperty> allRoom;
+    public bool isShowBaseNotify = false;
+    public string notifyMessage = "";
+    public bool isShowProcessCircle = false;
+    public bool isSuccess = false;
+    public bool isCompletelyLoad = false;
+    #endregion
+
+    #region Methods
+
+    public void CloseNotify()
+    {
+        isShowBaseNotify = !isShowBaseNotify;
+    }
+
+    /// <summary>
+    /// on init
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        allInterview = await Http.GetFromJsonAsync<List<Interviewer>>("api/interviewer/get-all");
+        allRoom = await Http.GetFromJsonAsync<List<InterviewProperty>>("api/interviewproperty/room");
+
+        LoadData();
+
+    }
+
+    public List<Interviewer> ListOfInterviewer = new List<Interviewer>();
+    public async void AddInterview(int candidateID){
+
+
+        Tuple<Email, Candidate> value = await Http.GetFromJsonAsync<Tuple<Email, Candidate>>($"api/email/get-nearest-email-candidate/{candidateID}");
+        Interview = new InterviewMeeting()
+                {
+                    InterviewMeetingHeader = "The Interview with " + value.Item2.CandidateName,
+                    InterviewMeetingDate = value.Item1.InvitedDate,
+                    InterviewMeetingPlace = value.Item1.InvitedPlace,
+                    InterviewMeetingRoomID = 1, //default
+                    CandidateID =value.Item1.CandidateID
+                };
+        isShowAddInterview = true;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    ///  Event click Checkbox
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="id"></param>
+    public void CheckboxHandler(ChangeEventArgs e, int id)
+    {
+        if (e.Value.ToString() == "True")
+        {
+            listOfIdGoingToDoAction.Add(id);
+        }
+        else if (e.Value.ToString() == "False")
+        {
+            listOfIdGoingToDoAction.Remove(id);
+        }
+        ToggleDisplayMassAction();
+    }
+
+    /// <summary>
+    /// ToggleDisplayMassAction
+    /// </summary>
+    public async void ToggleDisplayMassAction()
+    {
+        if (listOfIdGoingToDoAction.Count > 0)
+        {
+            isShowMassActionButton = true;
+        }
+        else if (listOfIdGoingToDoAction.Count == 0)
+        {
+            isShowMassActionButton = false;
+            await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        }
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// input checkbox check all box event handler
+    /// </summary>
+    /// <param name="e"></param>
+    public async void CheckAllBox(string e)
+    {
+        bool isTrue = false;
+        if (e == "True")
+        {
+            isTrue = true;
+        }
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", isTrue);
+        if (isTrue)
+        {
+            listOfObjectBySearch.ForEach((i) => listOfIdGoingToDoAction.Add(i.CandidateID));
+        }
+        else
+        {
+            listOfObjectBySearch.ForEach((i) => listOfIdGoingToDoAction.Remove(i.CandidateID));
+        }
+        ToggleDisplayMassAction();
+    }
+
+    /// <summary>
+    /// Close confirm box
+    /// </summary>
+    public async void MassActionDeny()
+    {
+        isShowConfirmBox = true;
+        isAccept = false;
+    }
+
+    /// <summary>
+    /// Close confirm box with implementing the Task
+    /// </summary>
+    public async void MassActionAccept()
+    {
+        isShowConfirmBox = true;
+        isAccept = true;
+    }
+
+    /// <summary>
+    /// Call API get by delFlag(1)
+    /// </summary>
+    /// <returns></returns>
+    public async void LoadData()
+    {
+        isCompletelyLoad = false;
+        var response = await Http.PostAsJsonAsync<List<int>>($"api/candidate/status-ids",
+        new List<int>(){
+                (int)CandidateStatusCode.InvitedTest,
+                (int)CandidateStatusCode.InvitedInterviewRoundOne,
+                (int)CandidateStatusCode.InvitedInterviewRoundTwo}
+        );
+        listOfObject = await response.Content.ReadFromJsonAsync<List<Candidate>>();
+        listOfObjectBySearch = listOfObject;
+        isCompletelyLoad = true;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// change statusValue of candidate to accept
+    /// </summary>
+    /// <param name="id"></param>
+    public async void ActionAccept(int id)
+    {
+        await Http.DeleteAsync($"api/candidate/status/{id}/{(int)CandidateStatusCode.AcceptCV}");
+        LoadData();
+    }
+
+    /// <summary>
+    /// delete logic a candidate
+    /// </summary>
+    /// <param name="id"></param>
+    public async void AtionDeny(int id)
+    {
+        await Http.DeleteAsync($"api/candidate/changedelflag/{id}/0");
+        LoadData();
+    }
+
+    /// <summary>
+    /// load and show cv up by pressing button
+    /// </summary>
+    /// <param name="id"></param>
+    public void ShowCVUp(string cvfileName)
+    {
+        cvPath = "CV/" + cvfileName + ".pdf";
+        isShowCV = !isShowCV;
+    }
+
+    /// <summary>
+    /// sort button click event handler : sort listofObject by its propeties
+    /// </summary>
+    /// <param name="sortByWhat"></param>
+    public void SortBy(string sortByWhat)
+    {
+        if (sortByWhat == sortBy)
+        {
+            listOfObjectBySearch.Sort((p1, p2) => p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString().CompareTo(
+            p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString()));
+            sortBy = "";
+        }
+        else
+        {
+            listOfObjectBySearch.Sort((p1, p2) => p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString().CompareTo(
+           p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString()));
+            sortBy = sortByWhat;
+        }
+    }
+
+    //// <summary>
+    /// find candidates by its name on input
+    /// </summary>
+    public void FindByNameHandler(ChangeEventArgs e)
+    {
+        string searchKeyword = e.Value.ToString().ToLower().Trim().Replace(" ", "");
+        listOfObjectBySearch = listOfObject;
+        if (searchKeyword != "")
+        {
+            listOfObjectBySearch = listOfObjectBySearch.FindAll(x => x.CandidateName.ToLower().Trim().Replace(" ", "").Contains(searchKeyword));
+        }
+    }
+
+    /// <summary>
+    /// close confirm box
+    /// </summary>
+    public void CloseConfirmBox()
+    {
+        isShowConfirmBox = false;
+    }
+
+    /// <summary>
+    /// Confirm confirm box event handler
+    /// </summary>
+    public async void AcceptConfirmBox()
+    {
+        isShowConfirmBox = false;
+        if (isAccept)
+        {
+            await Http.PostAsJsonAsync<List<int>>($"api/candidate/masschangestatus/{(int)CandidateStatusCode.AcceptCV}", listOfIdGoingToDoAction);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync<List<int>>("api/candidate/masschangeflag/0", listOfIdGoingToDoAction);
+        }
+        listOfIdGoingToDoAction.Clear();
+        ToggleDisplayMassAction();
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        LoadData();
+    }
+
+    /// <summary>
+    /// Call Api to save InterviewMeeting
+    /// </summary>
+    public async void SaveInterview()
+    {
+        if(selectedInterviewerAsString == ""){
+            // notify error
+            notifyMessage = "fill interviewer field";
+            isSuccess = false;
+            isShowBaseNotify = true;
+            }
+            else{
+
+                List<int> ListOfSelectedInterviewIDs = new List<int>();
+                foreach(var i in ListOfInterviewer)
+                {
+                    ListOfSelectedInterviewIDs.Add(i.InterviewerID);
+                }
+                isShowProcessCircle = true;
+                var response = await Http.PostAsJsonAsync<InterviewMeetingInfo>("api/interviewmeeting", new InterviewMeetingInfo()
+                {
+                    InterviewMeeting  = Interview,
+                    InterviewerIDs = ListOfSelectedInterviewIDs
+                });
+                isShowProcessCircle = false;
+                if (response.IsSuccessStatusCode)
+                {
+                    notifyMessage = "Success";
+                    isSuccess = true;
+                    isShowAddInterview = false;
+                    isShowBaseNotify = true;
+                    StateHasChanged();
+                }
+                selectedInterviewerAsString = "";
+                Interview = new InterviewMeeting();
+                ListOfSelectedInterviewIDs.Clear();
+                await Task.CompletedTask;
+            }
+        }
+
+        /// <summary>
+        /// Close Add Interview Pop Up Form
+        /// </summary>
+        public void CloseAddInterview(){
+            selectedInterviewerAsString = "";
+            ListOfInterviewer.Clear();
+            Interview = new InterviewMeeting();
+            isShowAddInterview = !isShowAddInterview;
+        }
+
+        /// <summary>
+        /// Show DropdownList
+        /// </summary>
+        public void ShowDropDownList()
+        {
+            isShowDropDownlist = !isShowDropDownlist;
+        }
+
+        /// <summary>
+        /// When Interview Changing Value of interviewer
+        /// </summary>
+        public void OnChangeInterview(Interviewer value, ChangeEventArgs args)
+        {
+            if(args.Value.ToString() == "True" ){
+              ListOfInterviewer.Add(value);
+              selectedInterviewerAsString += $"{value.InterviewerName} ,"; 
+            }
+            else if(args.Value.ToString() == "False" && ListOfInterviewer.Contains(value)){
+              ListOfInterviewer.Remove(value);
+              selectedInterviewerAsString =  selectedInterviewerAsString.Replace($"{value.InterviewerName} ,",""); 
+            }
+        }
+    #endregion
+}

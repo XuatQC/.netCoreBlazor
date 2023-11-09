@@ -1,0 +1,466 @@
+﻿@inject HttpClient Http;
+@page "/test"
+@using CandidateSystem.Shared;
+@using CandidateSystem.Client.Components.Base;
+@using Newtonsoft;
+@inject NavigationManager NavManager;
+@inject IJSRuntime JS;
+<h3>Assess Candidate</h3>
+<div class="button-actions-container">
+    @if (isShowButtonActions)
+    {
+        <button class="btn btn-success" @onclick="SendMultiMailForFailCandidate">Send Mail</button>
+    }
+</div>
+<div class="table-custom">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col" class="d-flex-center">
+                    <input type="checkbox" class="form-check-input" checked="@checkBoxAll"
+                           @oninput="(e)=> CheckAllBox(e.Value.ToString())" />
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        ID
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Position
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Job Title
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Full Name
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Date of Birth
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Phone Number
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Status
+                    </button>
+                </th>
+                <th scope="col">
+                    <button class="normally-button" style="font-weight:700">
+                        Apply Before
+                    </button>
+                </th>
+                <th scope="col">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (listOfObject != null)
+            {
+                @foreach (var iter in listOfObject)
+                {
+                    <tr class="table-row" style="@ChangeRowStyleValue(@iter.Item2.isHaveAssess)">
+                        <th scope="col" class="d-flex-center">
+                            <input type="checkbox" class="form-check-input"
+                                   id="@iter.Item1.CandidateID"
+                                   checked="@iter.Item1.isChecked"
+                           @oninput="(args)=>CheckBoxChanged(args,iter.Item1.CandidateID)" disabled="@(iter.Item2.isHaveAssess != ISHAVEASSESS.FAIL)" />
+                        </th>
+                        <td>
+                            <button class="normally-button">@iter.Item1.CandidateID</button>
+                        </td>
+                        <td>@iter.Item1.JobPosition</td>
+                        <td>@iter.Item1.JobTitle</td>
+                        <td>@iter.Item1.CandidateName</td>
+                        <td>@iter.Item1.CandidateEmail</td>
+                        <td>@iter.Item1.CandidateNumber.PhoneNumberFormatter()</td>
+                        <td>@iter.Item1.CandidateStatus</td>
+                        <td>@Util.BitIntToBooleanString(iter.Item1.HasApplyBefore)</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="()=>AddAssessment(iter.Item2.InterviewMeetingID)">
+                                <span hidden="@(iter.Item2.isHaveAssess == ISHAVEASSESS.NOTYET)">Update</span>
+                                <span hidden="@(iter.Item2.isHaveAssess == ISHAVEASSESS.PASS)">Add</span> Assessment
+                            </button>
+                            @if (iter.Item2.isHaveAssess == ISHAVEASSESS.PASS)
+                            {
+                                <button class="btn btn-success" @onclick="()=>SendMailToPassedCandidate(iter.Item1)">Send Result</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+@if (isShowAddAssessment)
+{
+    <div class="add-assess-form">
+        <div class="assess-form-container">
+            <div class="assess-form-wrapper">
+                <div class="assess-header">Assessment <span hidden="@(!isUpdate)"> Update</span></div>
+                <EditForm Model="assessCandidate" OnValidSubmit="SaveAssessment">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <div class="input-container">
+                        <div class="input-label">Interviewer:</div>
+                        <InputSelect ValueExpression="@(()=>assessCandidate.InterviewerID)" Value="@assessCandidate.InterviewerID" ValueChanged="@((int? value)=> OnValueChanged(value))" class="form-control">
+                            @foreach (var i in currentInterviewers)
+                            {
+                                <option value="@i.InterviewerID">@i.InterviewerName</option>
+                            }
+                        </InputSelect>
+                        <div class="validate-message">
+                            <ValidationMessage For="@(() =>assessCandidate.InterviewerID)"></ValidationMessage>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-label">Result</div>
+                        <div class="input-radio-items">
+                            <div class="input-radio-wrapper">
+                                <input id="true" class="input-radio-class" type="radio" checked="@(assessCandidate.isPass == 1)"
+                                       name="Gender" @onchange="@(() => assessCandidate.isPass = 1)" />
+                                <label for="true" class="input-radio-label">Pass</label>
+                            </div>
+                            <div class="input-radio-wrapper">
+                                <input id="false" type="radio" checked="@(assessCandidate.isPass == 0)"
+                                       name="Gender" @onchange="@(() => assessCandidate.isPass = 0)" />
+                                <label for="false" class="input-radio-label">Fail</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-container" hidden="@(assessCandidate.isPass==1)">
+                        <div class="input-label">Deny Reason</div>
+                        <InputText @bind-Value="assessCandidate.DenyReason" class="form-control"></InputText>
+                        <div class="validate-message">
+                            <ValidationMessage For="@(() => assessCandidate.DenyReason)" />
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-label">Comment</div>
+                        <InputText @bind-Value="assessCandidate.Comment" class="form-control"></InputText>
+                        <div class="validate-message">
+                            <ValidationMessage For="@(() => assessCandidate.Comment)" />
+                        </div>
+                    </div>
+                    <div class="button-wrapper">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button class="btn btn-light" @onclick="CloseAddAccessment">Close</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+@if (isShowNotify)
+{
+    <Base_Notify notifyMessage="@notifyMessage" callBackFunc="CloseNotify" isSuccess="@isNotifySuccess"></Base_Notify>
+}
+@if (isShowOfferEmail)
+{
+    <div class="mail-container">
+        <div class="mail-wrapper">
+            <div class="mail-body">
+                <h2 class="mail-form-header">
+                    Send Offer Mail
+                </h2>
+                <EditForm Model="@currentEmail" OnValidSubmit=@InputSubmit>
+                    <DataAnnotationsValidator />
+                    <div class="mail-form-body">
+                        <div class="input-container">
+                            <div class="input-label">Subject</div>
+                            <InputText @bind-Value="currentEmail.EmailSubject" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => currentEmail.EmailSubject)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-label">Email File</div>
+                        <InputFile OnChange="@LoadFile" class="form-control" accept=".pdf" multiple />
+                        <div class="validate-message">
+                            <ValidationMessage For="@(() => currentEmail.EmailFile)" />
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-label">Email Content:</div>
+                        <InputTextArea @bind-Value="currentEmail.EmailContent" class="form-control text-area-width" style="height: 210px;"></InputTextArea>
+                        <div class="validate-message">
+                            <ValidationMessage For="@(() => currentEmail.EmailContent)" />
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button class="btn btn-success" type="submit">Send Offer</button>
+                        <button class="btn btn-light" @onclick="CloseOfferMailForm">Close</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    #region Values
+    public List<Tuple<Candidate, InterviewMeeting>> listOfObject = new List<Tuple<Candidate, InterviewMeeting>>();
+    ///get all candidate has interview that on before tomorrowDay
+    public List<Interviewer> currentInterviewers = new List<Interviewer>();
+    public int chooseInterview;
+    public bool isUpdate = false;
+    public Assess assessCandidate = new Assess()
+        {
+            isPass = 1,
+            DenyReason = ""
+        };
+    public DateOnly tomorrowDay;
+    public int currentShowUp = -1;
+    public bool isShowAddAssessment;
+    public List<int> ListOfCheckBox = new List<int>();
+    public bool isShowButtonActions = false;
+    public bool checkBoxAll = false;
+    public string notifyMessage = "";
+    public bool isShowNotify = false;
+    public bool isNotifySuccess = false;
+    public bool isShowOfferEmail = false;
+    public Email currentEmail = new Email();
+    #endregion
+
+    #region Methods
+
+    protected async override Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+    /// <summary>
+    /// Load Data from db
+    /// </summary>
+    public async void LoadData()
+    {
+        tomorrowDay = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+        var response = await Http.PostAsJsonAsync<string>("api/candidate/get-candidates-by-newest-interview/", tomorrowDay.ToString("yyyy-MM-dd"));
+        listOfObject = await response.Content.ReadFromJsonAsync<List<Tuple<Candidate, InterviewMeeting>>>();
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// open Assessment Form
+    /// </summary>
+    /// <param name="candidateId"></param>
+    public async void AddAssessment(int interviewMeetingID)
+    {
+        currentInterviewers = await Http.GetFromJsonAsync<List<Interviewer>>($"api/interviewer/get-interviewer-by-interview-meeting/{interviewMeetingID}");
+        assessCandidate.InterviewMeetingID = interviewMeetingID;
+        assessCandidate.InterviewerID = currentInterviewers[0].InterviewerID;
+        GetExistAssess();
+        isShowAddAssessment = !isShowAddAssessment;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Mass Action: will send deny mail for all selected candidate
+    /// </summary>
+    public async void SendMultiMailForFailCandidate()
+    {
+        var response = await Http.PostAsJsonAsync<List<int>>("api/email/send-reject-email", ListOfCheckBox);
+        notifyMessage = "Sending Email succeseed";
+        isNotifySuccess = true;
+        isShowNotify = true;
+        LoadData();
+    }
+
+    /// <summary>
+    /// Event Checkbox Change Handler
+    /// </summary>
+    /// <param name="args"></param>
+    /// <param name="candidateID"></param>
+    public void CheckBoxChanged(ChangeEventArgs args, int candidateID)
+    {
+        if (args.Value.ToString() == "True")
+        {
+            ListOfCheckBox.Add(candidateID);
+            if (ListOfCheckBox.Count == listOfObject.FindAll((x) => (x.Item2.isHaveAssess == ISHAVEASSESS.FAIL)).Count) checkBoxAll = true;
+        }
+        else
+        {
+            ListOfCheckBox.Remove(candidateID);
+            if (ListOfCheckBox.Count != listOfObject.FindAll((x) => (x.Item2.isHaveAssess == ISHAVEASSESS.FAIL)).Count) checkBoxAll = false;
+        }
+
+        ToggleButtonActions();
+    }
+
+    //// <summary>
+    /// Save Assessment
+    /// </summary>
+    public async void SaveAssessment()
+    {
+        //[TODO]: Check if InterviewerID = -1
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(assessCandidate));
+        Console.Write("save assessment");
+        if (!isUpdate)
+        {
+            await Http.PostAsJsonAsync("api/assess", assessCandidate);
+            notifyMessage = "Save Assessment Completely succeed";
+        }
+        else
+        {
+            await Http.PutAsJsonAsync<Assess>($"api/assess/{assessCandidate.AssessID}", assessCandidate);
+            notifyMessage = "Update Assessment Completely succeed";
+        }
+        isNotifySuccess = true;
+        isShowNotify = true;
+        LoadData();
+    }
+
+    /// <summary>
+    /// input checkbox check all box event handler
+    /// </summary>
+    /// <param name="e"></param>
+    public async void CheckAllBox(string e)
+    {
+        bool isTrue = false;
+        if (e == "True")
+        {
+            isTrue = true;
+        }
+        checkBoxAll = isTrue;
+        if (isTrue)
+        {
+            listOfObject.ForEach((i) => { if (i.Item2.isHaveAssess == ISHAVEASSESS.FAIL && !ListOfCheckBox.Any<int>((x) => (x == i.Item1.CandidateID))) ListOfCheckBox.Add(i.Item1.CandidateID); });
+        }
+        else
+        {
+            listOfObject.ForEach((i) => { if (i.Item2.isHaveAssess == ISHAVEASSESS.FAIL) ListOfCheckBox.Remove(i.Item1.CandidateID); });
+        }
+        ToggleButtonActions();
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(ListOfCheckBox));
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", isTrue);
+    }
+
+    //// <summary>
+    /// Close Assessment Form
+    /// </summary>
+    public void CloseAddAccessment()
+    {
+        Console.Write("Close Add assessment");
+        isShowAddAssessment = !isShowAddAssessment;
+        assessCandidate = new Assess()
+            {
+                isPass = 1
+            };
+    }
+
+    public void ToggleButtonActions()
+    {
+        Console.WriteLine(ListOfCheckBox.Count);
+        if (ListOfCheckBox.Count > 0)
+            isShowButtonActions = true;
+        else
+            isShowButtonActions = false;
+    }
+
+    public async void OnValueChanged(int? value)
+    {
+        assessCandidate.InterviewerID = value;
+        Console.WriteLine(value);
+        GetExistAssess();
+    }
+
+    /// <summary>
+    /// Load current assess's interviewer
+    /// </summary>
+    public async void GetExistAssess()
+    {
+        var currentInterviewerID = assessCandidate.InterviewerID;
+        var response = await Http.GetAsync($"api/assess/get-by-ids/{assessCandidate.InterviewerID}/{assessCandidate.InterviewMeetingID}");
+        if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
+        {
+            assessCandidate = await response.Content.ReadFromJsonAsync<Assess>();
+            assessCandidate.InterviewerID = currentInterviewerID;
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(assessCandidate));
+            isUpdate = true;
+        }
+        else
+        {
+            isUpdate = false;
+        }
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// change value color depends on isHaveAssess status
+    /// </summary>
+    public string ChangeRowStyleValue(int isHaveAssess)
+    {
+        switch (isHaveAssess)
+        {
+            case ISHAVEASSESS.NOTYET:
+                return "background-color: white";
+            case ISHAVEASSESS.PASS:
+                return "background-color: #1eff7d";
+            case ISHAVEASSESS.FAIL:
+                return "background-color: #f36069";
+            default:
+                return "";
+        }
+    }
+
+    /// <summary>
+    /// send mail button handler when candidate has passed;
+    /// </summary>
+    /// <param name="interviewMeetingID"></param>
+    public void SendMailToPassedCandidate(Candidate candidate)
+    {
+        Console.WriteLine("send Mail result");
+        if (candidate.JobPositionID == (int)CandidateStatusCode.Intern && candidate.CandidateStatusID == (int)CandidateStatusCode.PassedInterviewRoundOne || candidate.CandidateStatusID == (int)CandidateStatusCode.PassedInterviewRoundTwo)
+        {
+            currentEmail = new Email()
+                {
+                    EmailSubject = String.Format(EmailTemplate.OfferSubject, candidate.JobPosition, candidate.JobTitle),
+                    EmailAddress = candidate.CandidateEmail,
+                    EmailContent = String.Format(EmailTemplate.OfferLetterBody, candidate.JobPosition)
+                };
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(currentEmail));
+            // [TODO]Pop up Offer
+            isShowOfferEmail = true;
+        }
+        else
+        {
+            NavManager.NavigateTo($"/invite-candidate");
+        }
+    }
+
+    /// <summary>
+    /// Close Notify
+    /// </summary>
+    public void CloseNotify()
+    {
+        isShowNotify = !isShowNotify;
+    }
+
+    public void CloseOfferMailForm()
+    {
+        isShowOfferEmail = !isShowOfferEmail;
+    }
+
+    /// submit offer mail handler
+    public void InputSubmit()
+    {
+        //[Send Offer Mail handler]
+
+    }
+    // Load offer file
+    public void LoadFile()
+    {
+        //Update file
+    }
+    #endregion
+}

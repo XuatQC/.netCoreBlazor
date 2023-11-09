@@ -1,0 +1,127 @@
+﻿.custom-table-row{
+    
+}
+.custom-table-row:hover{
+    background-color:antiquewhite;
+}
+.normalize-button {
+    border: none;
+    background: transparent;
+}
+.page-container {
+}
+.date-picker {
+    width: 30%;
+    padding: 8px 0 8px 0;
+}
+.selected-date-time {
+    margin-right: 4px;
+}
+.update-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #a7a7a754;
+}
+
+.update-wrapper {
+    background-color: white;
+    border-radius: 8px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    top: 50%;
+}
+
+.update-header {
+    font-size: 30px;
+    font-weight: 700;
+    padding: 20px;
+}
+
+.input-wrapper {
+    padding: 12px;
+}
+
+.input-cv-file--disable {
+}
+
+.input-cv-file__button {
+    border: none;
+    width: 100%;
+    overflow: hidden;
+    background-color: #a7a4a45c;
+}
+
+.preview-main-container {
+    padding: 28px;
+}
+
+.text-area-width {
+    width: 100%;
+}
+
+.button-container {
+    padding-top: 12px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.multy-select-container {
+    position: relative;
+}
+
+.input-dropdown-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-dropdown-container {
+    border: 1px solid gray;
+    border-top-right-radius: 4px;
+    position: absolute;
+    top: 0;
+    border-bottom-right-radius: 4px;
+    bottom: 0;
+}
+
+.dropdown-list-container {
+    position: absolute;
+    left: 0;
+    background-color: white;
+    border: 1px solid #b9b9b96b;
+    right: 0;
+    padding: 8px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.option-dropdown {
+    padding: 4px 4px 4px 4px;
+    display: flex;
+    border-radius: 4px;
+}
+
+.label-checkbox-container {
+    padding-left: 12px;
+    width: 100%;
+    user-select: none;
+}
+
+.option-dropdown:hover {
+    background-color: #e7e7e7db;
+}
+.input-container {
+    min-height: 84px;
+    min-width: 208px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+.table-notify {
+    text-align: center;
+    font-style: italic;
+    color: #c5c0c0;
+}

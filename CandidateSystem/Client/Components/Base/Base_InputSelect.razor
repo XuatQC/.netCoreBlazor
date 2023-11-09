@@ -1,0 +1,35 @@
+﻿<div class="input-container">
+    <div class="input-label">
+        @Label
+    </div>
+    <div class="input-select-wrapper">
+        <InputSelect @bind-Value="BindingValue" @attributes="otherAttributes">
+            @foreach (var iter in listOfObject)
+                {
+                    <option value="@iter">@iter</option>
+                }
+        </InputSelect>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string? Label{ get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> otherAttributes{ get; set; }
+    public string? SelectValue;
+    [Parameter]
+    public string[] listOfObject { get; set; }
+    [Parameter]
+    public string BindingValue
+    {
+        get => SelectValue;
+        set
+        {
+            if (SelectValue == value) return;
+            SelectValue = value;
+            BindingValueChanged.InvokeAsync(value);
+        }
+    }
+    [Parameter]
+    public EventCallback<string> BindingValueChanged { get; set; }
+}

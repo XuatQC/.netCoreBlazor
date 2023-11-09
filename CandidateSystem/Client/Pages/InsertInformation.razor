@@ -1,0 +1,268 @@
+﻿@using CandidateSystem.Client.Components.Base
+@using Newtonsoft 
+@using System.Threading.Tasks
+@using System.Net.Http.Headers;
+@inject HttpClient Http
+@page "/insert-information"
+<h3>Candidate Information</h3>
+<div class="page-container">
+    <EditForm Model="@candidate" OnValidSubmit=@InputSubmit  OnInvalidSubmit="InValidFormHandler">
+    <DataAnnotationsValidator />
+    <div class="input-wrapper ">
+        <div class="d-flex">
+            <div class="input-container">
+                <div class="input-label">Job Title</div>
+                <InputSelect class="form-control" @bind-Value="candidate.JobTitleID">
+                        @foreach(CandidateProperty iter in listOfJobTitle)
+                        {
+                            <option value="@iter.PropertyID">@iter.PropertyName</option>
+                        }
+                </InputSelect>
+            </div>
+            <div class="input-container">
+                <div class="input-label">Job Position</div>
+                    <InputSelect class="form-control" @bind-Value="candidate.JobPositionID">
+                        @foreach (CandidateProperty iter in listOfJobPosition)
+                        {
+                            <option value="@iter.PropertyID">@iter.PropertyName</option>
+                        }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="d-flex w-100">
+            <div class="input-container">
+                <div class="input-label">File CV</div>
+                    <InputFile OnChange="@LoadFile" class="form-control" style="@InputFileClassHandler()" accept=".pdf" />
+                    @if(ImportFileStatus == 2){
+                        <div class="validate-message" >
+                            <ValidationMessage For="@(() => candidate.CandidateCV)" />
+                        </div>
+                    }
+            </div>
+            <div class="input-container">
+                    <div class="input-label">Presenter</div>
+                <InputText @bind-Value="candidate.Resource" class="form-control" maxlength="100" ></InputText>
+                <div class="validate-message" >
+                        <ValidationMessage For="@(() => candidate.Resource)"/>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex w-100">
+                <div class="input-container">
+                    <div class="input-label">Candidate Name</div>
+                    <InputText @bind-Value="candidate.CandidateName" class="form-control" maxlength="100"></InputText>
+                    <div class="validate-message">
+                        <ValidationMessage For="@(() => candidate.CandidateName)" />
+                    </div>
+                </div>
+                <div class="input-container">
+                    <div class="input-label">Candidate Phone</div>
+                    <InputText @bind-Value="candidate.CandidateNumber" class="form-control" maxlength="15"></InputText>
+                    <div class="validate-message">
+                        <ValidationMessage For="@(() => candidate.CandidateNumber)" />
+                    </div>
+                </div>
+        </div>
+            <div class="d-flex w-100">
+                <div class="input-container">
+                    <div class="input-label">BirthDay</div>
+                    <InputDate Type="InputDateType.Date" @bind-Value="candidate.CandidateDateOfBirth" class="form-control"></InputDate>
+                    <div class="validate-message">
+                        <ValidationMessage For="@(() => candidate.CandidateDateOfBirth)" />
+                    </div>
+                </div>
+                <div class="input-container">
+                    <div class="input-label">Candidate Email</div>
+                    <InputText @bind-Value="candidate.CandidateEmail" class="form-control" maxlength="100"></InputText>
+                    <div class="validate-message">
+                        <ValidationMessage For="@(() => candidate.CandidateEmail)" />
+                    </div>
+                </div>
+            </div>
+            <div class="w-100">
+                <div class="input-container">
+                    <div class="input-label">Candidate Address</div>
+                    <InputText @bind-Value="candidate.CandidateAddress" class="form-control" maxlength="200"></InputText>
+                    <div class="validate-message">
+                        <ValidationMessage For="@(() => candidate.CandidateAddress)" />
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <input type="submit" value="Send" class="btn btn-primary first-button"/>
+                <input type="button" value="Clear"class="btn btn-light" @onclick="ClearData"/>
+            </div>
+    </div>
+        </EditForm>
+        @if(isThereAnyNotification){
+        <Base_Notify callBackFunc="CloseNotify" notifyMessage="Insert Completely succeed" isSuccess="true" 
+            ></Base_Notify>
+        }
+</div>
+@if (isShowLoadingProcessing)
+{
+    <LoadingComponent></LoadingComponent>    
+}
+@code {
+    #region Properties
+    public InputFileChangeEventArgs CurrentCVUpdate;
+    public string NotifyIcon = "oi-circle-check";
+
+    public Candidate candidate = new Candidate()
+    {
+        Resource = ""
+    };
+    private int currentFirstJobTitleItem;
+
+
+    private int currentFirstJobPositionItem;
+
+    private CandidateProperty[]? listOfJobTitle = new CandidateProperty[]{
+            new CandidateProperty(1,"")
+    };
+
+    private CandidateProperty[]? listOfJobPosition = new CandidateProperty[]{
+            new CandidateProperty(1,"")
+    };
+    public bool isShowLoadingProcessing = false;
+    private bool isThereAnyNotification = false;
+    /// <summary>
+    /// 0: default (no effect), 1: imported , 2: null
+    /// </summary>
+    public int ImportFileStatus = 0;
+    #endregion
+
+    #region Methods
+    /// <summary>
+    /// call API : get all jobtilte, jobposition 
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        isShowLoadingProcessing = true;
+        listOfJobTitle = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/jobtitle");
+        listOfJobPosition = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/jobposition");
+        isShowLoadingProcessing = false;
+        currentFirstJobTitleItem  = candidate.JobTitleID = listOfJobTitle[0].PropertyID;
+        currentFirstJobPositionItem = candidate.JobPositionID = listOfJobPosition[0].PropertyID;
+    }
+
+    /// <summary>
+    /// submit form hanlder
+    /// </summary>
+    public async void InputSubmit()
+    {
+
+        isShowLoadingProcessing = true;
+        candidate.CandidateCV = CVFileNameFormatter(candidate.CandidateCV, candidate);
+        var a = Newtonsoft.Json.JsonConvert.SerializeObject(candidate);
+        //send candidate object
+        await Http.PostAsJsonAsync("api/candidate", candidate);
+
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(CurrentCVUpdate.File.OpenReadStream());
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(CurrentCVUpdate.File.ContentType);
+        content.Add(
+            content: fileContent,
+            name: "\"files\"",
+            fileName: CurrentCVUpdate.File.Name);
+        HttpResponseMessage response =  await Http.PostAsync("api/file/" + candidate.CandidateCV, content);
+        isShowLoadingProcessing = false;
+        if(response.StatusCode == System.Net.HttpStatusCode.OK){
+            isThereAnyNotification = true;
+            StateHasChanged();
+        }
+        Console.WriteLine(a);
+    }
+
+    /// <summary>
+    /// invalide form sending button handler
+    /// </summary>
+    public void InValidFormHandler(){
+        if (string.IsNullOrEmpty(candidate.CandidateCV))
+        {
+            ImportFileStatus = 2;
+            return;
+        }
+        ImportFileStatus = 1;
+    }
+
+    /// <summary>
+    /// unknown
+    /// </summary>
+    public void ChangeSelectedValue(string value){
+        //CVFileNameFormatter();
+    }
+
+    /// <summary>
+    /// assign current import file to candiateFile
+    /// </summary>
+    /// <param name="e"></param>
+    private void LoadFile(InputFileChangeEventArgs e){
+        if (string.IsNullOrEmpty(e.File.Name)) 
+        {
+            ImportFileStatus = 2;
+        }
+        else{
+            CurrentCVUpdate = e;
+            candidate.CandidateCV = e.File.Name;
+            ImportFileStatus = 1;
+        }
+    }
+
+    ///  <summary>
+    ///  cv file name formmater using candidate's information
+    /// </summary>
+    /// <param name="fileName">name of the file</param>
+    /// <param name="candidate">the candidate's cv</param>
+    /// <returns>a name of cv file depending on candidate information </returns>
+    public string CVFileNameFormatter(string fileName, Candidate candidate)
+    {
+        return String.Concat(DateTime.Now.ToString("yyyyMMdd"),
+        "_", Enum.GetName(typeof(CandidateStatusCode), candidate.JobPositionID),
+        "_", Enum.GetName(typeof(CandidateStatusCode), candidate.JobTitleID),
+        "_", candidate.CandidateName.Replace(" ", ""), 
+        "_", candidate.CandidateNumber.Replace("+", ""));   
+    }
+
+    /// <summary>
+    /// clear form data
+    /// </summary>
+    public void ClearData()
+    {
+        ImportFileStatus = 0;
+        candidate = new Candidate(){
+            Resource = "",
+            JobTitleID = currentFirstJobTitleItem,
+            JobPositionID = currentFirstJobPositionItem
+        };
+    }
+
+    /// <summary>
+    /// Close Pop up Notify
+    /// </summary>
+    public void CloseNotify()
+    {
+        isThereAnyNotification = false;
+        ClearData();
+    }
+
+    public string InputFileClassHandler()
+    {
+        if(ImportFileStatus == 0){
+            return "border:1px solid #ced4da";
+        }
+        else if (ImportFileStatus == 1)
+        {
+            return "border :1px solid #26b050";
+        }
+        else if (ImportFileStatus == 2)
+        {
+            return "border :1px solid red";
+        }
+        return "";
+    }
+
+    #endregion
+}

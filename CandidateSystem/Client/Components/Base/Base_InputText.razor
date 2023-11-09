@@ -1,0 +1,31 @@
+﻿<div class="input-container">
+    <div class="input-label">
+        @Label
+    </div>
+    <div class="input-wrapper">
+    <InputText @bind-Value="BindingValue" @attributes="otherAttribute" placeholder="@placeholder"></InputText>
+    </div>
+</div>
+@code{
+    [Parameter]
+    public string? Label{ get; set; }
+    [Parameter]
+    public string? placeholder{ get; set; }
+    [Parameter(CaptureUnmatchedValues =true)]
+    public Dictionary<string,Object> otherAttribute{ get; set; }
+    public string? valueText { get; set;}
+    [Parameter]
+    public string BindingValue
+    {
+        get => valueText;
+        set
+        {
+            if (valueText == value) return;
+            valueText = value;
+            BindingValueChanged.InvokeAsync(valueText);
+        }
+    }
+    [Parameter]
+    public EventCallback<string> BindingValueChanged { get; set; }
+
+}

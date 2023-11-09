@@ -1,0 +1,23 @@
+﻿<div class="input-container">
+    <InputDate @bind-Value="BindingValue"></InputDate>
+</div>
+@code{
+
+    public DateTime dateTimeValue{ get; set; }
+    public DateTime BindingValue
+    {
+        get
+        {
+            return dateTimeValue;
+        }
+        set
+        {
+            if (dateTimeValue == value) return;
+            dateTimeValue = value;
+            BindingValueChanged.InvokeAsync(dateTimeValue);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<DateTime> BindingValueChanged{ get; set; }
+}

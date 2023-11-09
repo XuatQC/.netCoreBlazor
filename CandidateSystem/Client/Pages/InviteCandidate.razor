@@ -1,0 +1,794 @@
+﻿@page "/invite-candidate"
+@inject HttpClient Http
+@using CandidateSystem.Client.Components.Base
+@using Newtonsoft
+@inject IJSRuntime JS
+<div class="page-container">
+    <h3>Invite Candidate</h3>
+    <div class="function-bar">
+        @if (isShowMassActionButton)
+        {
+            <div class="action-container">
+                <button class="btn btn-outline-primary" @onclick="CreateMail">Create Mail</button>
+                <button class="btn btn-outline-success" @onclick="SendMail">Send Mail</button>
+            </div>
+        }
+        <div class="search-container">
+            <input class="search-input-text" value="@searchKeyword"
+                   placeholder="search by name" @oninput="(e)=> FindByNameHandler(e)"></input>
+        </div>
+    </div>
+    <div class="table-custom">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" class="d-flex-center">
+                        <input type="checkbox" class="form-check-input"
+                               @onchange="(e)=> CheckAllBox(e.Value.ToString())" />
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateID")'>
+                            ID
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobPosition")'>
+                            Position
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("JobTitle")'>
+                            Job Title
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateName")'>
+                            Full Name
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateNumber")'>
+                            Phone Number
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateEmail")'>
+                            Email
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CanContactID")'>
+                            Can Contact
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700">
+                            Note
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("CandidateStatusID")'>
+                            Status
+                        </button>
+                    </th>
+                    <th scope="col">
+                        <button class="normally-button" style="font-weight:700" @onclick='()=>SortBy("HasEmailFlag")'>
+                            Has Email
+                        </button>
+                    </th>
+                    <th scope="col">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listOfObject != null)
+                {
+                    @foreach (Candidate iter in listOfObjectBySearch)
+                    {
+                        <tr class="table-row">
+                            <th scope="col" class="d-flex-center">
+                                @if(iter.CanContactID == 21 || iter.CanContactID == 23 )
+                                {
+                                    <input type="checkbox" disabled class="form-check-input" id="@iter.CandidateID" @onchange="(e)=> CheckboxHandler(e,iter.CandidateID)" />    
+                                }else{
+                                    <input type="checkbox" class="form-check-input" id="@iter.CandidateID" @onchange="(e)=> CheckboxHandler(e,iter.CandidateID)" />
+                                }
+                            </th>
+                            <td>
+                                <button class="normally-button" @onclick="()=>ShowCVUp(iter.CandidateCV)">@iter.CandidateID</button>
+                            </td>
+                            <td>@iter.JobPosition</td>
+                            <td>@iter.JobTitle</td>
+                            <td>@iter.CandidateName</td>
+                            <td>@iter.CandidateNumber.PhoneNumberFormatter()</td>
+                            <td>@iter.CandidateEmail</td>
+                            <td>@(Enum.GetName(typeof(CandidateStatusCode),iter.CanContactID).InsertSpace())</td>
+                            <td>@iter.DenyReason</td>
+                            <td>@iter.CandidateStatus</td>
+                            <td>@Util.BitIntToBooleanString(iter.HasEmailFlag)</td>
+                            <td>
+                                <button class="btn btn-warning" @onclick="()=>ShowUpdateForm(iter.CandidateID)">Update</button>
+                                <button class="btn btn-info" @onclick="()=>ShowPreviewMail(iter.CandidateID)">Preview Mail</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+         @if (listOfObject == null && isCompletelyLoad || listOfObject != null && listOfObject.Count == 0 && isCompletelyLoad)
+        {
+            <div class="table-notify">There is no Candidate</div> 
+        }
+    </div>
+    @if (listOfObject == null)
+    {
+        <div class="load-proceeding-circle">
+            <div class="spinner-border text-secondary" role="status">
+            </div>
+        </div>
+    }
+    @if (isShowCV)
+    {
+        <div class="cv-container">
+            <div class="cv-wrapper">
+                <div class="cv-info">
+                    <button class="btn cv-close btn-danger" @onclick='()=>ShowCVUp("")'>X</button>
+                    <embed src=@cvPath class="cv-embed" />
+                </div>
+            </div>
+        </div>
+    }
+    @if (isShowConfirmBox)
+    {
+        <Base_Confirm ConfirmMessage="Do you want to make the changes?"
+                  callBackCloseFunc="CloseConfirmBox" callBackConfirmFunc="AcceptConfirmBox"></Base_Confirm>
+    }
+    @if (isShowChangeForm){
+        <div class="update-container">
+            <div class="update-wrapper">
+                <div class="update-header">Update</div>
+                 <EditForm Model="@candidate" OnValidSubmit=@UpdateHandler>
+                 <DataAnnotationsValidator />
+                <div class="input-wrapper ">
+                    <div class="d-flex">
+                     
+                        <div class="input-container">
+                            <div class="input-label">Job Title</div>
+                            <InputSelect class="form-control" @bind-Value="candidate.JobTitleID">
+                                @foreach (CandidateProperty iter in listOfJobTitle)
+                                {
+                                    <option value="@iter.PropertyID">@iter.PropertyName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Job Position</div>
+                            <InputSelect class="form-control" @bind-Value="candidate.JobPositionID">
+                                    @foreach (CandidateProperty iter in listOfJobPosition)
+                                {
+                                        <option value="@iter.PropertyID">@iter.PropertyName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                     <div class="d-flex">
+                        <div class="input-container">
+                            <div class="input-label">Status </div>
+                            <InputSelect class="form-control" @bind-Value="candidate.CandidateStatusID">
+                                @foreach (CandidateProperty iter in listOfCandidateStatus)
+                                {
+                                    <option value="@iter.PropertyID">@iter.PropertyName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Can Contact?</div>
+                            <InputSelect class="form-control" @bind-Value="candidate.CanContactID">
+                                    @foreach (CandidateProperty iter in listOfCanContact)
+                                {
+                                        <option value="@iter.PropertyID">@iter.PropertyName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100">
+                        <div class="input-container">
+                            <div class="input-label">File CV</div>
+                            <div class="input-cv-file--disable">
+                                <button class="input-cv-file__button form-control" disabled>
+                                    @candidate.CandidateCV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Presenter</div>
+
+                            <InputText @bind-Value="candidate.Resource" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.Resource)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100">
+                        <div class="input-container">
+                            <div class="input-label">Candidate Name</div>
+                            <InputText @bind-Value="candidate.CandidateName" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.CandidateName)" />
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Candidate Phone</div>
+                            <InputText @bind-Value="candidate.CandidateNumber" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.CandidateNumber)" />
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="d-flex w-100">
+                        <div class="input-container">
+                            <div class="input-label">BirthDay</div>
+                            <InputDate Type="InputDateType.Date" @bind-Value="candidate.CandidateDateOfBirth" class="form-control"></InputDate>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.CandidateDateOfBirth)" />
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Candidate Email</div>
+                            <InputText @bind-Value="candidate.CandidateEmail" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.CandidateEmail)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <div class="input-container">
+                            <div class="input-label">Candidate Address</div>
+                            <InputText @bind-Value="candidate.CandidateAddress" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => candidate.CandidateAddress)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <input type="submit" value="Save" class="btn btn-primary first-button"/>
+                        <input type="button" value="Close" class="btn btn-light" @onclick="CloseUpdateWindow" />
+                    </div>
+                </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+   
+    @if(isShowPreviewMail){
+         <div class="update-container">
+            <div class="update-wrapper">
+                <div class="preview-main-container">
+                <h1>Preview Mail</h1>
+                    <EditForm Model="@emailObject" OnValidSubmit="@CreateMailSubmitHandler">
+                        <div class="d-flex">
+                            <div class="input-container">
+                                    <DataAnnotationsValidator />
+                                <div class="input-label">To:</div>
+                                <InputText @bind-Value="emailObject.EmailAddress" class="form-control" maxlength="90"></InputText>
+                                <div class="validate-message">
+                                    <ValidationMessage For="@(() => emailObject.EmailAddress)" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <DataAnnotationsValidator />
+                                <div class="input-label">Receive Person:</div>
+                        <InputText @bind-Value="emailObject.ReceivePerson" class="form-control" maxlength="90"></InputText>
+                                <div class="validate-message">
+                                        <ValidationMessage For="@(() => emailObject.ReceivePerson)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="input-container">
+                                <DataAnnotationsValidator />
+                                <div class="input-label">Subject:</div>
+                                <InputText @bind-Value="emailObject.EmailSubject" class="form-control" maxlength="90"></InputText>
+                                <div class="validate-message">
+                                    <ValidationMessage For="@(() => emailObject.EmailSubject)" />
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="d-flex">
+                             <div class="input-container">
+                                <DataAnnotationsValidator />
+                                <div class="input-label">Interview Date:</div>
+                                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="emailObject.InvitedDate" class="form-control"/>
+                                <div class="validate-message">
+                                    <ValidationMessage For="@(() => emailObject.InvitedDate)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="input-container">
+                                <DataAnnotationsValidator />
+                                <div class="input-label">Interview Place:</div>
+                                <InputText @bind-Value="emailObject.InvitedPlace" class="form-control" maxlength="300" />
+                                <div class="validate-message">
+                                    <ValidationMessage For="@(() => emailObject.InvitedPlace)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-label">Email Content:</div>
+                            <InputTextArea @bind-Value="emailObject.EmailContent" class="form-control text-area-width" style="height: 210px;" maxlength="500"></InputTextArea>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => emailObject.EmailSubject)" />
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <input type="submit" value="Save" @onclick="SaveUpdateEmail" class="btn btn-primary first-button" />
+                            <input type="button" value="Close" @onclick="()=>{isShowPreviewMail= !isShowPreviewMail;}" class="btn btn-light first-button" />
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    }
+     @if (isShowBaseNotify)
+     {
+        <Base_Notify callBackFunc="CloseNotify" notifyMessage="@notifyMessage" isSuccess="@isSuccessNotify"></Base_Notify>
+     }
+    @if(isShowLoadingProcess)
+    {
+        <LoadingComponent></LoadingComponent>
+    }
+</div>
+@code {
+
+    #region Properties
+
+    private string cvPath = "";
+    private string sortBy = "";
+    public bool isShowCV;
+    public bool isShowConfirmBox = false;
+    private bool isShowBaseNotify = false;
+    private bool isShowPreviewMail = false;
+    public bool isAccept = false;
+    private string searchKeyword = "";
+    private bool isShowMassActionButton = false;
+    private bool isShowChangeForm = false;
+    private string notifyMessage = "";
+    public bool isSuccessNotify = false;
+    private List<int> listOfIdGoingToDoAction = new List<int>();
+    public List<Candidate>? listOfObject = null;
+    public List<Candidate>? listOfObjectBySearch = null;
+
+    private int currentFirstJobTitleItem;
+    private int currentFirstJobPositionItem;
+    public Email emailObject = new Email()
+    {
+       EmailFile = "filled"
+    };
+    public bool isShowLoadingProcess = false;
+
+    public Candidate candidate = new Candidate()
+                {
+                    Resource = ""
+                };
+    private CandidateProperty[]? listOfJobTitle = new CandidateProperty[]{
+                new CandidateProperty(1,"")
+    };
+
+    private CandidateProperty[]? listOfJobPosition = new CandidateProperty[]{
+                new CandidateProperty(1,"")
+    };
+    private CandidateProperty[]? listOfCandidateStatus = new CandidateProperty[]{
+                new CandidateProperty(1,"")
+    };
+
+    private CandidateProperty[]? listOfCanContact = new CandidateProperty[]{
+                new CandidateProperty(1,"")
+    };
+    public bool isCompletelyLoad = false;
+    #endregion
+
+    #region Methods
+
+    public void InputSubmit(){
+        Console.WriteLine("test1"); 
+    }
+
+    /// <summary>
+    /// on init
+    /// </summary>
+    /// <returns></returns>
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        LoadData();
+        listOfJobTitle = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/jobtitle");
+        listOfJobPosition = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/jobposition");
+        listOfCandidateStatus = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/candidatestatus");
+        listOfCanContact = await Http.GetFromJsonAsync<CandidateProperty[]>("api/candidateproperty/cancontact");
+        currentFirstJobTitleItem = candidate.JobTitleID = listOfJobTitle[0].PropertyID;
+        currentFirstJobPositionItem = candidate.JobPositionID = listOfJobPosition[0].PropertyID;
+    }
+
+    /// <summary>
+    ///  Event click Checkbox
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="id"></param>
+    public void CheckboxHandler(ChangeEventArgs e, int id)
+    {
+        if (e.Value.ToString() == "True" && !listOfIdGoingToDoAction.Any(x => x == id))
+        {
+
+            listOfIdGoingToDoAction.Add(id);
+        }
+        else if (e.Value.ToString() == "False" && listOfIdGoingToDoAction.Any(x => x == id))
+        {
+            listOfIdGoingToDoAction.Remove(id);
+        }
+        ToggleDisplayMassAction();
+    }
+
+    /// <summary>
+    /// ToggleDisplayMassAction
+    /// </summary>
+    public async void ToggleDisplayMassAction()
+    {
+        if (listOfIdGoingToDoAction.Count > 0)
+        {
+            isShowMassActionButton = true;
+        }
+        else if (listOfIdGoingToDoAction.Count == 0)
+        {
+            isShowMassActionButton = false;
+            await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        }
+        Console.WriteLine(listOfIdGoingToDoAction.Count);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// input checkbox check all box event handler
+    /// </summary>
+    /// <param name="e"></param>
+    public async void CheckAllBox(string e)
+    {
+        bool isTrue = false;
+        if (e == "True")
+        {
+            isTrue = true;
+        }
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", isTrue);
+        if (isTrue)
+        {
+            foreach(Candidate i in listOfObjectBySearch)
+            {
+                if(i.CanContactID == (int)CandidateStatusCode.CanContact &&
+                !listOfIdGoingToDoAction.Contains(i.CandidateID)
+                ){
+                    listOfIdGoingToDoAction.Add(i.CandidateID);
+                }
+            }
+        }
+        else
+        {
+            listOfObjectBySearch.ForEach((i) => listOfIdGoingToDoAction.Remove(i.CandidateID));
+        }
+        Console.WriteLine(listOfIdGoingToDoAction.Count);
+        ToggleDisplayMassAction();
+    }
+
+    /// <summary>
+    /// Close confirm box
+    /// </summary>
+    public async void MassActionDeny()
+    {
+        isShowConfirmBox = true;
+        isAccept = false;
+    }
+
+    /// <summary>
+    /// Close confirm box with implementing the Task
+    /// </summary>
+    public async void MassActionAccept()
+    {
+        isShowConfirmBox = true;
+        isAccept = true;
+    }
+
+    /// <summary>
+    /// Call API get by delFlag(1)
+    /// </summary>
+    /// <returns></returns>
+    public async void LoadData()
+    {
+        isCompletelyLoad = false;
+        List<int> notin = new List<int>()
+            {
+                (int)CandidateStatusCode.ReceiveCV,
+                (int)CandidateStatusCode.DenyCV,
+                (int) CandidateStatusCode.InvitedTest,
+                (int) CandidateStatusCode.InvitedInterviewRoundOne ,
+                (int) CandidateStatusCode.InvitedInterviewRoundTwo,
+                (int)CandidateStatusCode.SentOffer
+            };
+        //listOfObject = await Http.GetFromJsonAsync<List<Candidate>>($"api/candidate/store/{(int)CandidateStatusCode.AcceptCV}/1");
+        using var response =  await Http.PostAsJsonAsync($"api/candidate/notinstatus/", notin);
+        listOfObject = await response.Content.ReadFromJsonAsync<List<Candidate>>();
+        listOfObjectBySearch = listOfObject;
+        isCompletelyLoad = true;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// change statusValue of candidate to accept
+    /// </summary>
+    /// <param name="id"></param>
+    public async void ActionAccept(int id)
+    {
+        Console.WriteLine(id);
+        await Http.DeleteAsync($"api/candidate/status/{id}/{(int)CandidateStatusCode.AcceptCV}");
+        LoadData();
+    }
+
+    /// <summary>
+    /// delete logic a candidate
+    /// </summary>
+    /// <param name="id"></param>
+    public async void AtionDeny(int id)
+    {
+        await Http.DeleteAsync($"api/candidate/changedelflag/{id}/0");
+        LoadData();
+    }
+
+    /// <summary>
+    /// load and show cv up by pressing button
+    /// </summary>
+    /// <param name="id"></param>
+    public void ShowCVUp(string cvfileName)
+    {
+        cvPath = "CV/" + cvfileName + ".pdf";
+        isShowCV = !isShowCV;
+    }
+
+    /// <summary>
+    /// sort button click event handler : sort listofObject by its propeties
+    /// </summary>
+    /// <param name="sortByWhat"></param>
+    public void SortBy(string sortByWhat)
+    {
+        if (sortByWhat == sortBy)
+        {
+            listOfObjectBySearch.Sort((p1, p2) => p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString().CompareTo(
+            p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString()));
+            sortBy = "";
+        }
+        else
+        {
+            listOfObjectBySearch.Sort((p1, p2) => p2.GetType().GetProperty(sortByWhat).GetValue(p2).ToString().CompareTo(
+            p1.GetType().GetProperty(sortByWhat).GetValue(p1).ToString()));
+            sortBy = sortByWhat;
+        }
+    }
+    //// <summary>
+    /// find candidates by its name on input
+    /// </summary>
+    public void FindByNameHandler(ChangeEventArgs e)
+    {
+        string searchKeyword = e.Value.ToString().ToLower().Trim().Replace(" ", "");
+        listOfObjectBySearch = listOfObject;
+        if (searchKeyword != "")
+        {
+            listOfObjectBySearch = listOfObjectBySearch.FindAll(x => x.CandidateName.ToLower().Trim().Replace(" ", "").Contains(searchKeyword));
+        }
+    }
+
+    /// <summary>
+    /// close confirm box
+    /// </summary>
+    public void CloseConfirmBox()
+    {
+        isShowConfirmBox = false;
+    }
+
+    /// <summary>
+    /// Confirm confirm box event handler
+    /// </summary>
+    public async void AcceptConfirmBox()
+    {
+        isShowConfirmBox = false;
+        if (isAccept)
+        {
+            await Http.PostAsJsonAsync<List<int>>("api/candidate/masschangeflag/0", listOfIdGoingToDoAction);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync<List<int>>($"api/candidate/masschangestatus/{(int)CandidateStatusCode.AcceptCV}", listOfIdGoingToDoAction);
+        }
+        listOfIdGoingToDoAction.Clear();
+        ToggleDisplayMassAction();
+        await JS.InvokeVoidAsync("SetAllInputCheckBox", false);
+        LoadData();
+    }
+
+
+    /// <summary>
+    /// clear form data
+    /// </summary>
+    public void ClearData()
+    {
+        candidate = new Candidate()
+                {
+                    Resource = "",
+                    JobTitleID = 1,
+                    JobPositionID = 2
+                };
+    }
+    public async void ShowUpdateForm(int candidateID)
+    {
+        candidate =  await Http.GetFromJsonAsync<Candidate>($"api/candidate/{candidateID}");
+        isShowChangeForm = true;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Call Api to save the change of Candidate
+    /// </summary>
+    public async void UpdateHandler()
+    {
+        await Http.PutAsJsonAsync<Candidate>($"api/candidate", candidate);
+        isShowChangeForm = false;
+        isSuccessNotify = true;
+        notifyMessage = "Update completed";
+        isShowBaseNotify = true;
+        if(candidate.CanContactID != (int)CandidateStatusCode.CanContact && listOfIdGoingToDoAction.Contains(candidate.CandidateID))
+        {
+            listOfIdGoingToDoAction.Remove(candidate.CandidateID);
+        }
+        LoadData();
+    }
+
+    /// <summary>
+    /// Close Update Form pop up
+    /// </summary>
+    public void CloseUpdateWindow()
+    {
+        isShowChangeForm = false;
+    }
+
+    /// <summary>
+    /// Close Notfiy Pop up
+    /// </summary>
+    public void CloseNotify()
+    {
+        isShowBaseNotify = false;
+    }
+
+    /// <summary>
+    /// Show Preview Mail
+    /// </summary>
+    public async void ShowPreviewMail(int candidateID)
+    {
+        bool willPreviewFlag = true;
+        foreach(var i in listOfObjectBySearch)
+        {
+            if(i.CandidateID == candidateID && i.HasEmailFlag != 0)
+            {
+                willPreviewFlag = false;
+                break;
+            }
+        }
+        if (willPreviewFlag)
+        {
+            isSuccessNotify = false;
+            notifyMessage = "There's no Mail to Peek";
+            isShowBaseNotify = true;
+            StateHasChanged();
+        }
+        else{
+            // Open Prieview Mail
+            emailObject = await Http.GetFromJsonAsync<Email>($"api/email/{candidateID}");
+            emailObject.EmailFile = "Filled";
+            isShowPreviewMail = true;
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// ??
+    /// </summary>
+    public void CreateMailSubmitHandler()
+    {
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(emailObject));
+    }
+
+    /// <summary>
+    /// Create Mail by Email Table 
+    /// </summary>
+    public async void CreateMail(){
+
+        bool willCallAPI = true;
+        foreach (var i in listOfObjectBySearch)
+        {
+            if(listOfIdGoingToDoAction.Contains(i.CandidateID) && i.HasEmailFlag == 1){
+                willCallAPI = false;
+                isSuccessNotify = false;
+                notifyMessage = $"candidate with ID: {i.CandidateID} already have mail!";
+                isShowBaseNotify = true;
+                break;
+            }
+        }
+        if(willCallAPI){
+            using var response =  await Http.PostAsJsonAsync($"api/email/createmail", listOfIdGoingToDoAction);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                notifyMessage = $"Create Email for Candidate with ID : {Newtonsoft.Json.JsonConvert.SerializeObject(listOfIdGoingToDoAction)}";
+                isSuccessNotify = true;
+                isShowBaseNotify = true;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotModified){
+                notifyMessage = $"There is already have email";
+                isSuccessNotify  = false;
+                isShowBaseNotify = true;
+            }
+        }
+        CheckAllBox("False");
+        LoadData();
+    }
+
+    /// <summary>
+    /// Call API to save the changes of EMail
+    /// </summary>
+    public async void SaveUpdateEmail(){
+        var response = await Http.PutAsJsonAsync($"api/email/{emailObject.EmailID}", emailObject);
+        if (response.IsSuccessStatusCode)
+        {
+            notifyMessage = "Update Completed";
+            isSuccessNotify = true;
+            isShowBaseNotify = true;
+        }
+        else{
+            notifyMessage = "Update failed";
+            isSuccessNotify = false;
+            isShowBaseNotify = true;
+        }
+        isShowPreviewMail = false;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// call api to send mail
+    /// </summary>
+    public async void SendMail()
+    {
+        bool willCallAPI = true;
+        foreach (var i in listOfObjectBySearch)
+        {
+            if (listOfIdGoingToDoAction.Contains(i.CandidateID) && i.HasEmailFlag == 0)
+            {
+                willCallAPI = false;
+                notifyMessage = $"candidate with ID: {i.CandidateID} hasn't mail to send!";
+                isSuccessNotify = false;
+                isShowBaseNotify = true;
+                break;
+            }
+        }
+        if (willCallAPI)
+        {
+            isShowLoadingProcess = true;
+            await Http.PostAsJsonAsync<List<int>>($"api/email/sending-mails", listOfIdGoingToDoAction);
+            isShowLoadingProcess = false;
+            notifyMessage = "Send Mails Complete Succeed";
+            isSuccessNotify = true;
+            isShowBaseNotify = true;
+            await Task.CompletedTask;
+        }
+        CheckAllBox("False");
+        LoadData();
+
+        Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(listOfIdGoingToDoAction));
+    }
+    #endregion
+}

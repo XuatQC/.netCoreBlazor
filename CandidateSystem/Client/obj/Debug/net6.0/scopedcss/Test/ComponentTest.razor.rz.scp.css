@@ -1,0 +1,42 @@
+.mail-container[b-i0byzhdo7p] {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #5a5a5a33;
+}
+.mail-wrapper[b-i0byzhdo7p] {
+    width: 600px ;
+    background-color: white;
+    padding: 26px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+}
+.mail-body[b-i0byzhdo7p]{
+
+}
+.mail-form-header[b-i0byzhdo7p]{
+
+}
+.input-container[b-i0byzhdo7p] {
+    min-height: 84px;
+    min-width: 208px;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+.input-label[b-i0byzhdo7p] {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.validate-message[b-i0byzhdo7p] {
+    padding-left: 4px;
+    font-size: 14px;
+}
+.button-container[b-i0byzhdo7p]{
+    padding-top:12px;
+}

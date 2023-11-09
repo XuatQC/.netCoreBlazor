@@ -1,0 +1,1032 @@
+{
+	"info": {
+		"_postman_id": "9205110f-06e7-4a45-9b6c-1bb9ab65a4ae",
+		"name": "Candidate Managerment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Candidate",
+			"item": [
+				{
+					"name": "CandidateProperty",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{UrlBase}}/api/candidateproperty/jobtitle",
+									"host": [
+										"{{UrlBase}}"
+									],
+									"path": [
+										"api",
+										"candidateproperty",
+										"jobtitle"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7231/api/test1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7231",
+									"path": [
+										"api",
+										"test1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "insert candidate information",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"CandidateName\": \"Chu Thi\",\r\n  \"CandidateDateOfBirth\": \"2022-03-06T12:16:40\",\r\n  \"CandidateAddress\": \"Phu Tho\",\r\n  \"CandidateNumber\": \"43434343434\",\r\n  \"CandidateCV\": \"4343\",\r\n  \"CandidateEmail\": \"Chu21Thi@gmail.com\",\r\n  \"Resource\": \"Ngan\",\r\n  \"JobTitleID\": \"1\",\r\n  \"JobPositionID\": \"5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all candidate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/store/1",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"store",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by status IDs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[10]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/status-ids",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"status-ids"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by delflag and statusid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/store/7/1",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"store",
+								"7",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change delelete Flag of a candidate",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/changedelflag/48/0",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"changedelflag",
+								"48",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change status of a candidate",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/status/48/8",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"status",
+								"48",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mass-increase-candidatestatus-by-one",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[48,50]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/mass-increase-candidatestatus-by-one",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"mass-increase-candidatestatus-by-one"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mass Change delFlag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[48,49,50,51,52,53]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/masschangeflag/1",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"masschangeflag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mass change statusid",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[48]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/masschangestatus/8",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"masschangestatus",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/77",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"77"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a candidate",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"candidateID\": 49,\r\n    \"candidateName\": \" Toan Khanh Chi\",\r\n    \"candidateDateOfBirth\": \"0001-01-01T00:00:00\",\r\n    \"candidateAddress\": \"Ha Noi Viet Nam\",\r\n    \"candidateNumber\": \"+84868772457\",\r\n    \"candidateCV\": \"20230320__ToanKhanhChi_84868772457\",\r\n    \"candidateEmail\": \"toanf21@gmail.com\",\r\n    \"resource\": \"has changed\",\r\n    \"jobTitleID\": 6,\r\n    \"jobTitle\": \"\",\r\n    \"jobPositionID\": 3,\r\n    \"jobPosition\": \"\",\r\n    \"hasApplyBefore\": 1,\r\n    \"delFlag\": 1,\r\n    \"candidateStatusID\": 9,\r\n    \"candidateStatus\": \"\",\r\n    \"canContactID\": 21,\r\n    \"canContact\": \"\",\r\n    \"denyReason\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get not in status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[7,14,10,9,12]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/notinstatus",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"notinstatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get candidates by ids",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[50,51]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/massgetbyids",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"massgetbyids"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get candidates by newest interview",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"2023-04-06\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/candidate/get-candidates-by-newest-interview/",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidate",
+								"get-candidates-by-newest-interview",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "JobTitle",
+			"item": [
+				{
+					"name": "get all jobtitle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidateproperty/jobtitle",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidateproperty",
+								"jobtitle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all jobposition",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/candidateproperty/jobtitle",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"candidateproperty",
+								"jobtitle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/file/test",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"file",
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "test1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/jobtitle",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"jobtitle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Email",
+			"item": [
+				{
+					"name": "Get All Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/email",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create mail multiply",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[48,50]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/email/createmail",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"createmail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Candidateid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/email/48",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"48"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update email",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailID\": 19,\r\n    \"emailSubject\": \"Saishunkan System Vietnam_Take A Test Invitation \\n\",\r\n    \"emailContent\": \"Dear Le Khanh Chi \\nWe are a recuitment Deparment of Saishunkai System VietNam. \\nThanks for Take an attention in NodeJS Intern position of our company \\nWe have a plan to test NodeJS in the time and location: \\nDate:3/27/2023 8:52:40 AM\\nLocation: Saishunkan System Vietnam \\n 14th Floor, Thai Binh Tower, 106 Hoang Quoc Viet, Nghia Do, Cau Giay, Ha Noi\\nThanks! changed\",\r\n    \"delFlag\": 1,\r\n    \"candidateID\": 48,\r\n    \"emailFile\": \"\",\r\n    \"invitedPlace\": \"Saishunkan System Vietnam \\n 14th Floor, Thai Binh Tower, 106 Hoang Quoc Viet, Nghia Do, Cau Giay, Ha Noi\",\r\n    \"invitedDate\": \"2023-03-27T08:52:40\",\r\n    \"emailAddress\": \"toanf21@gmail.com \",\r\n    \"receivePerson\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/email/19",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test_SendingMail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/email/test-sending-mail",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"test-sending-mail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNearestEmailAndCandidateByCandidateId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/email/get-nearest-email-candidate/51",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"get-nearest-email-candidate",
+								"51"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send reject email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    48\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/email/send-reject-email",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"email",
+								"send-reject-email"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Interviewer",
+			"item": [
+				{
+					"name": "get all interviewers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewer/get-all",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewer",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get interviewer by interviewmeetingID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewer/get-interviewer-by-interview-meeting/22",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewer",
+								"get-interviewer-by-interview-meeting",
+								"22"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "InterviewProperty",
+			"item": [
+				{
+					"name": "get all room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewproperty/room",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewproperty",
+								"room"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "InterviewMeetingDetail",
+			"item": [
+				{
+					"name": "Add new InterviewMeetingDetail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n    \"InterviewMeetingDetailID\":1,\r\n    \"InterviewMeetingID\":1,\r\n    \"InterviewerID\": 1\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeetingdetail/mash-insert",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeetingdetail",
+								"mash-insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get newest interviewmeetingDetailID by candidateid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeetingdetail/interview-meeting-detail-by-candidate/50",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeetingdetail",
+								"interview-meeting-detail-by-candidate",
+								"50"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "InterviewMeeting",
+			"item": [
+				{
+					"name": "insert an interview",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"InterviewMeetingID\":1,\r\n    \"InterviewMeetingHeader\":\"test 1 header\",\r\n    \"InterviewMeetingPlace\":\"test 1 place\",\r\n    \"InterviewMeetingDate\":\"2023-03-27T08:52:40\",\r\n    \"InterviewMeetingRoomID\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeeting/",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeeting",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeeting",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeeting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by date",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"3/28/2023\"\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeeting/get",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeeting",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeeting/10",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeeting",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"InterviewMeetingID\":1,\r\n    \"InterviewMeetingHeader\":\"test 1 header\",\r\n    \"InterviewMeetingPlace\":\"test 1 place\",\r\n    \"InterviewMeetingDate\":\"2023-03-27T08:52:40\",\r\n    \"InterviewMeetingRoomID\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/interviewmeeting/10",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"interviewmeeting",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assess",
+			"item": [
+				{
+					"name": "Insert Assess",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"assessID\": 0,\r\n    \"comment\": \"test1\",\r\n    \"denyReason\": \"\",\r\n    \"interviewMeetingDetailID\": 0,\r\n    \"interviewMeetingID\": 24,\r\n    \"interviewerID\": 1,\r\n    \"isPass\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/assess/",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"assess",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Assess Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Assess\":1,\r\n    \"isPass\":1,\r\n    \"DenyReason\":\"no reason has changed\",\r\n    \"Comment\":\"no comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{UrlBase}}/api/assess/2",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"assess",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by ids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/assess/get-by-ids/2/23",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"assess",
+								"get-by-ids",
+								"2",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if Fail or pass",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{UrlBase}}/api/assess/is-pass/23",
+							"host": [
+								"{{UrlBase}}"
+							],
+							"path": [
+								"api",
+								"assess",
+								"is-pass",
+								"23"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

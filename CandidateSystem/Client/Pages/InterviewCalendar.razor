@@ -1,0 +1,232 @@
+﻿@page "/interview-canlendar"
+@using CandidateSystem.Shared;
+@using CandidateSystem.Client.Components.Base;
+@inject HttpClient Http;
+@inject IJSRuntime JS;
+<h3>Interview Calendar</h3>
+<div class="page-container">
+    <div class="date-picker">
+        <label for="selectedDateTime">Select Day :</label>
+        <div class="d-flex">
+            <input id="selectedDateTime" type="date" @bind-value="selectedDateTime" class="form-control selected-date-time"></input>
+            <button class="btn btn-outline-primary" @onclick="FindCalendarByDate">Find</button>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col" rowspan="2">Calendar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var i in listOfInterviewMeeting){
+                <tr class="custom-table-row">
+                    <th scope="row">
+                        @i.InterviewMeetingID
+                    </th>
+                    <th scope="row">
+                        <button class="normalize-button" @ondblclick="()=>ShowDetail(i.InterviewMeetingID)">@(i.InterviewMeetingHeader + " " + i.InterviewMeetingDate +" "+ i.InterviewMeetingPlace)</button>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (listOfInterviewMeeting == null && isCompletelyLoad || listOfInterviewMeeting != null && listOfInterviewMeeting.Count == 0 && isCompletelyLoad)
+    {
+        <div class="table-notify">There is no Meeting</div>
+    }
+</div>
+
+    <div class="update-container" hidden="@(!isShowAddInterview)">
+        <div class="update-wrapper">
+            <div class="preview-main-container">
+                <h1>Interview Information</h1>
+                <EditForm Model="@currentInterviewExtends.InterviewMeeting" OnValidSubmit="@SaveInterview">
+                    <div class="d-flex">
+                        <div class="input-container">
+                            <div class="input-label">Header</div>
+                            <InputText @bind-Value="currentInterviewExtends.InterviewMeeting.InterviewMeetingHeader" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => currentInterviewExtends.InterviewMeeting.InterviewMeetingHeader)"></ValidationMessage>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="input-container">
+                            <div class="input-label">Date</div>
+                            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="currentInterviewExtends.InterviewMeeting.InterviewMeetingDate" class="form-control"></InputDate>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => currentInterviewExtends.InterviewMeeting.InterviewMeetingDate)"></ValidationMessage>
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-label">Room</div>
+                            <InputSelect @bind-Value="currentInterviewExtends.InterviewMeeting.InterviewMeetingRoomID" class="form-control">
+                                @foreach (InterviewProperty i in allRoom)
+                                {
+                                    <option value="@i.PropertyID">@i.PropertyName</option>
+                                }
+                            </InputSelect>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => currentInterviewExtends.InterviewMeeting.InterviewMeetingRoomID)"></ValidationMessage>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="input-container">
+                            <div class="input-label">Interviewer</div>
+                            <div class="multy-select-container">
+                                <div class="input-dropdown-container">
+                                    <input type="text" @bind-value="selectedInterviewerAsString" class="form-control" disabled />
+                                    <button class="button-dropdown-container" @onclick="ShowDropDownList" type="button">
+                                        <span class="oi oi-caret-bottom" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div hidden="@(!isShowDropDownlist)" class="dropdown-list-container">
+                                    @foreach (var i in allInterview)
+                                    {
+                                        <div class="option-dropdown">
+                                            <input id="@i.InterviewerID" 
+                                        checked="@(currentInterviewExtends.Interviewers.Any(x=>x.InterviewerID == i.InterviewerID))" 
+                                        type="checkbox" 
+                                        class="form-check-input" @onchange="args=>OnChangeInterview(i,args)">
+                                            <label for="@i.InterviewerID" class="label-checkbox-container">@i.InterviewerName</label>
+                                        </div>
+                                        
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="input-container">
+                            <div class="input-label">Location</div>
+                            <InputText @bind-Value="currentInterviewExtends.InterviewMeeting.InterviewMeetingPlace" class="form-control"></InputText>
+                            <div class="validate-message">
+                                <ValidationMessage For="@(() => currentInterviewExtends.InterviewMeeting.InterviewMeetingPlace)"></ValidationMessage>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <input type="submit" hidden="@(true)" value="Save" class="btn btn-primary first-button" />
+                        <input type="button" value="Close" @onclick="CloseAddInterview" class="btn btn-light first-button" />
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+@if (isShowNotify)
+{
+    <Base_Notify callBackFunc = "CloseNotify" notifyMessage = "@NotifyMessage" isSuccess = "@(true)" ></Base_Notify>
+}
+@if (isShowProcess)
+{
+    <LoadingComponent />
+}
+@code {
+    #region Properties
+        public DateOnly selectedDateTime = DateOnly.FromDateTime(DateTime.Now);
+        public bool isShowAddInterview = false;
+        public bool isShowProcess = false;
+        public bool firstChangeInterviewer = true;
+        public InterviewMeeting Interview = new InterviewMeeting();
+        public InterviewMeetingInfoExtends currentInterviewExtends = new InterviewMeetingInfoExtends(){
+            InterviewMeeting = new InterviewMeeting()
+        }; 
+        public List<InterviewProperty> allRoom = new List<InterviewProperty>();
+        public string selectedInterviewerAsString = "";
+        public List<Interviewer> allInterview = new List<Interviewer>();
+        List<InterviewMeeting> listOfInterviewMeeting = new List<InterviewMeeting>();
+        public bool isShowDropDownlist = false;
+        public List<Interviewer> ListOfInterviewer = new List<Interviewer>();
+        public bool isShowNotify = false;
+        public string NotifyMessage = "";
+        public bool isCompletelyLoad = false;
+    #endregion 
+
+    #region Methods
+        public async void ShowDetail(int i)
+        {
+            Console.WriteLine("Show detail of " + i);
+            isShowProcess = true;
+            currentInterviewExtends = await Http.GetFromJsonAsync<InterviewMeetingInfoExtends>($"api/interviewmeeting/{i}");
+            isShowProcess = false;
+            //foreach(var item in currentInterviewExtends.Interviewers){
+            //}   
+
+            // call json
+            //await JS.InvokeVoidAsync("CheckCheckboxByList", currentInterviewExtends.Interviewers.Select(x => x.InterviewerID).ToArray());
+            currentInterviewExtends.Interviewers.ForEach(x => { selectedInterviewerAsString += $"{x.InterviewerName} ,"; });
+            isShowAddInterview = !isShowAddInterview;
+            StateHasChanged();
+            //[TODO] get interviewMeeting by id {API}
+        }
+        public async void SaveInterview()
+        {
+
+            var response = await Http.PutAsJsonAsync<InterviewMeetingInfoExtends>($"api/interviewmeeting/{currentInterviewExtends.InterviewMeeting.InterviewMeetingID}",currentInterviewExtends);
+            if (response.IsSuccessStatusCode)
+            {
+                isShowAddInterview = false;
+                NotifyMessage = "Success";
+                isShowNotify = true;
+                StateHasChanged();
+            }
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(currentInterviewExtends));
+        }
+
+        public void CloseNotify()
+        {
+            isShowNotify = false;
+        }
+
+        protected async override Task OnInitializedAsync()
+        {
+            await Task.Delay(500);
+            allRoom = await Http.GetFromJsonAsync<List<InterviewProperty>>("api/interviewproperty/room");
+            allInterview = await Http.GetFromJsonAsync<List<Interviewer>>("api/interviewer/get-all");
+            LoadData();
+        }
+
+        public async void LoadData()
+        {
+            isShowProcess = true;
+            isCompletelyLoad = false;
+            var response = await Http.PostAsJsonAsync<string>("api/interviewmeeting/get", selectedDateTime.ToString());
+            listOfInterviewMeeting = await response.Content.ReadFromJsonAsync<List<InterviewMeeting>>();
+            isShowProcess = false;
+            isCompletelyLoad = true;
+            StateHasChanged();
+        }
+        public void FindCalendarByDate()
+        {
+            LoadData();
+        }
+        public void CloseAddInterview()
+        {
+            selectedInterviewerAsString = "";
+            isShowAddInterview = !isShowAddInterview;
+        }
+
+        public void ShowDropDownList()
+        {
+            isShowDropDownlist = !isShowDropDownlist;
+        }
+        public void OnChangeInterview(Interviewer value, ChangeEventArgs args)
+        {
+            firstChangeInterviewer = false;
+            if (args.Value.ToString() == "True" && currentInterviewExtends.Interviewers.Find(x =>(x.InterviewerID == value.InterviewerID)) == null)
+            {
+                currentInterviewExtends.Interviewers.Add(value);
+                selectedInterviewerAsString += $"{value.InterviewerName} ,";
+            }
+            else if (args.Value.ToString() == "False")
+            {
+                currentInterviewExtends.Interviewers.Remove(value);
+                selectedInterviewerAsString = selectedInterviewerAsString.Replace($"{value.InterviewerName} ,", "");
+            }
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(currentInterviewExtends.Interviewers)); 
+        }
+    #endregion
+}
