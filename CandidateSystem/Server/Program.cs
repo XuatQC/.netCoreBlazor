@@ -20,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 //                          policy.WithOrigins("https://localhost:7179/");
 //                      });
 //});
+// updated on commit
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
