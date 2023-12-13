@@ -1,2 +1,2 @@
 .gitignore export-ignore
-CandidateSystem/Server/appsettings.json  export-ignore
+CandidateSystem/Server/appsettings.json export-ignore
